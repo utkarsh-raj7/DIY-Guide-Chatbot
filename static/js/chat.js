@@ -216,10 +216,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(timestamp);
         const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
+        // Use different icons for user and bot messages
         const senderIcon = sender === 'bot' ? 
-            '<i class="fas fa-tools me-2"></i>' : 
+            '<i class="fas fa-leaf me-2"></i>' : 
             '<i class="fas fa-user me-2"></i>';
         
+        // Create a more visually appealing message structure
         messageDiv.innerHTML = `
             <div class="message-content">${senderIcon}${formatMessageText(text)}</div>
             <div class="message-timestamp">${formattedTime}</div>
