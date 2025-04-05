@@ -1,8 +1,6 @@
 import os
 import logging
 import tempfile
-import base64
-import json
 from datetime import datetime
 
 from flask import Flask, render_template, request, jsonify
@@ -56,7 +54,6 @@ def send_message():
     try:
         user_message = request.json.get('message', '')
         chat_id = request.json.get('chat_id', 'default')
-        timestamp = request.json.get('timestamp')
         
         # Get or create the chat session
         if chat_id not in chat_sessions:
@@ -67,50 +64,13 @@ def send_message():
         
         # Return the response
         return jsonify({
-            'text': bot_response,
-            'timestamp': timestamp
+            'text': bot_response
         })
     except Exception as e:
         logger.error(f"Error processing message: {e}")
         return jsonify({
-            'text': "Sorry, I encountered an error processing your request. Please try again.",
-            'timestamp': timestamp
+            'text': "Sorry, I encountered an error processing your request. Please try again."
         })
-
-@app.route('/speech_to_text', methods=['POST'])
-def speech_to_text():
-    """
-    Process audio data for speech-to-text conversion.
-    
-    Expects a base64-encoded audio file in the request.
-    Returns the transcribed text.
-    """
-    try:
-        # Get the audio data from the request
-        audio_data = request.json.get('audio')
-        
-        if not audio_data:
-            return jsonify({
-                'status': 'error',
-                'message': 'No audio data provided'
-            }), 400
-        
-        # For now, we'll return a placeholder transcription
-        # In a real application, you would use a speech-to-text service
-        # For example: Google Cloud Speech-to-Text, Azure Speech Service, etc.
-        
-        # Placeholder response - this would be replaced with actual STT implementation
-        return jsonify({
-            'status': 'success',
-            'transcription': "I'm interested in DIY spring gardening projects."
-        })
-        
-    except Exception as e:
-        logger.error(f"Error transcribing audio: {e}")
-        return jsonify({
-            'status': 'error',
-            'message': f'Failed to transcribe audio: {str(e)}'
-        }), 500
 
 @app.route('/save_audio', methods=['POST'])
 def save_audio():

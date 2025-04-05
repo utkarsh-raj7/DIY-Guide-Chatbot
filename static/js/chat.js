@@ -192,11 +192,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!message) return;
         
-        // Create a timestamp for this message
-        const timestamp = new Date().toISOString();
-        
         // Add the message to the UI
-        addMessageToUI(message, 'user', timestamp);
+        addMessageToUI(message, 'user');
         
         // Clear the input field
         messageInput.value = '';
@@ -224,28 +221,27 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.status === 'success') {
                     isFirstMessage = false;
-                    sendMessageToServer(message, timestamp);
+                    sendMessageToServer(message);
                 } else {
                     hideTypingIndicator();
                     console.error('Failed to create chat session:', data.message);
-                    addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
+                    addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot');
                 }
             })
             .catch(error => {
                 hideTypingIndicator();
                 console.error('Error creating chat session:', error);
-                addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
+                addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot');
             });
         } else {
             // Otherwise, just send the message
-            sendMessageToServer(message, timestamp);
+            sendMessageToServer(message);
         }
         
         // Save this message to the chat history
         saveMessageToHistory(currentChatId, {
             text: message,
-            sender: 'user',
-            timestamp: timestamp
+            sender: 'user'
         });
         
         // Update chat title if needed
@@ -257,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Sends the message to the server and handles the response
      */
-    function sendMessageToServer(message, timestamp) {
+    function sendMessageToServer(message) {
         fetch('/send_message', {
             method: 'POST',
             headers: {
@@ -265,8 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 message: message,
-                chat_id: currentChatId,
-                timestamp: timestamp
+                chat_id: currentChatId
             })
         })
         .then(response => response.json())
@@ -275,13 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
             hideTypingIndicator();
             
             // Add the bot response to the UI
-            addMessageToUI(data.text, 'bot', new Date().toISOString());
+            addMessageToUI(data.text, 'bot');
             
             // Save the bot response to chat history
             saveMessageToHistory(currentChatId, {
                 text: data.text,
-                sender: 'bot',
-                timestamp: new Date().toISOString()
+                sender: 'bot'
             });
             
             // Update chat title if needed
@@ -295,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideTypingIndicator();
             
             console.error('Error sending message:', error);
-            addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot', new Date().toISOString());
+            addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot');
         });
     }
     
@@ -353,9 +347,9 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Adds a message to the UI
      */
-    function addMessageToUI(text, sender, timestamp) {
-        // Format the timestamp for display
-        const formattedTime = new Date(timestamp).toLocaleTimeString([], {
+    function addMessageToUI(text, sender) {
+        // Format the current time for display
+        const formattedTime = new Date().toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit'
         });
@@ -378,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="message-bubble">
                 <div class="message-content">${formattedText}</div>
                 <div class="message-footer">
-                    <span class="message-time">${formattedTime}</span>
                     ${sender === 'bot' ? '<button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>' : ''}
                 </div>
             </div>
@@ -594,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (messages && messages.length > 0) {
             // Add each message to the UI
             messages.forEach(message => {
-                addMessageToUI(message.text, message.sender, message.timestamp);
+                addMessageToUI(message.text, message.sender);
             });
             
             // Set firstMessage flag (false if we have messages)
