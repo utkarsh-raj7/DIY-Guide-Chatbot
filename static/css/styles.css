@@ -106,21 +106,7 @@ body {
     transform: rotate(180deg);
 }
 
-#new-chat-btn {
-    background: var(--button-gradient);
-    border: none;
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
 
-#new-chat-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
 
 /* Main content styles */
 .main-content {
@@ -633,15 +619,6 @@ button:focus, textarea:focus, input:focus {
 }
 
 
-#new-chat-btn:hover {
-    background-color: white;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-image: var(--button-gradient);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-}
 
 /* Improved user message background */
 .message-user {
@@ -652,24 +629,32 @@ button:focus, textarea:focus, input:focus {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 /* White New Chat button with gradient text */
+
+/* Remove the old button styles */
 #new-chat-btn {
-    background: white;
-    background-color: white;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-image: var(--button-gradient);
-    border: 1px solid var(--spring-light-brown);
-    font-weight: 700;
-    text-shadow: none;
+    background: white !important;
+    background-color: white !important;
+    color: transparent !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    background-image: var(--button-gradient) !important;
+    border: 1px solid var(--spring-light-brown) !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
+    width: 100% !important;
+    padding: 12px !important;
+    transition: all 0.2s ease !important;
 }
 
 #new-chat-btn:hover {
-    background-color: white;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-image: var(--button-gradient);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
+    background: white !important;
+    background-color: white !important;
+    color: transparent !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    background-image: var(--button-gradient) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
 }
