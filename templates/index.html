@@ -98,6 +98,9 @@
                         <button id="record-btn" class="btn btn-circle" title="Record audio message">
                             <i class="fas fa-microphone"></i>
                         </button>
+                        <button id="volume-btn" class="btn btn-circle" title="Toggle text-to-speech">
+                            <i class="fas fa-volume-mute"></i>
+                        </button>
                         <div id="recording-indicator" class="recording-indicator d-none">
                             <span class="recording-pulse"></span>
                             <span class="recording-text">Recording...</span>
@@ -112,9 +115,22 @@
                             </button>
                         </div>
                     </div>
+                        <div id="audio-player" class="audio-player d-none">
+                            <audio id="audio-element" controls></audio>
+                            <button id="send-audio-btn" class="btn btn-sm btn-primary" title="Send audio">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button id="cancel-audio-btn" class="btn btn-sm btn-danger" title="Cancel">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
                     
                     <div class="message-input-wrapper">
                         <textarea id="message-input" class="form-control" placeholder="Type your DIY question here..." rows="1"></textarea>
+                        <button id="search-btn" class="btn btn-secondary search-btn" title="Search for DIY ideas">
+                            <i class="fas fa-search"></i>
+                        </button>
                         <button id="send-btn" class="btn btn-primary send-btn" title="Send message">
                             <i class="fas fa-paper-plane"></i>
                         </button>

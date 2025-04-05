@@ -1179,3 +1179,75 @@ button:focus, textarea:focus, input:focus {
     color: #333;
     line-height: 1.4;
 }
+
+/* Search button styling */
+.search-btn {
+    background-color: var(--spring-moss);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+    background-color: #5a7a44;
+    transform: scale(1.05);
+}
+
+.search-btn:active {
+    transform: scale(0.95);
+}
+
+.search-btn i {
+    font-size: 1rem;
+}
+
+/* Volume button styling */
+#volume-btn {
+    margin-left: 8px;
+    background-color: var(--spring-light-yellow);
+    border: none;
+    color: #746c56;
+}
+
+#volume-btn.active {
+    background-color: var(--spring-sage);
+    color: white;
+}
+
+/* Copy button fix */
+.copy-btn {
+    background: none;
+    border: none;
+    color: var(--spring-brown);
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.copy-btn:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.message-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.message-user .message-footer {
+    justify-content: flex-start;
+}

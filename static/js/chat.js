@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggleSidebarBtn) toggleSidebarBtn.addEventListener('click', toggleSidebar);
     if (toggleSidebarReturnBtn) toggleSidebarReturnBtn.addEventListener('click', toggleSidebar);
     if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleMobileSidebar);
+    if (document.getElementById("search-btn")) document.getElementById("search-btn").addEventListener("click", performWebSearch);
     
     // Initialize
     init();
@@ -549,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="message-bubble">
                 <div class="message-content">${formattedText}</div>
                 <div class="message-footer">
-                    ${sender === 'bot' ? '<button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>' : ''}
+                    <button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>
                 </div>
             </div>
         `;
@@ -796,3 +797,112 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle('mobile-visible');
     }
 });
+
+    /**
+     * Perform a web search for DIY information
+     */
+    function performWebSearch() {
+        const message = messageInput.value.trim();
+        
+        if (!message) return;
+        
+        // Create a search prompt
+        const searchPrompt = `DIY ${message}`;
+        
+        // Add the message to the UI
+        const timestamp = new Date().toISOString();
+        addMessageToUI(message, 'user', timestamp);
+        
+        // Clear the input field
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // If this is the first message, create a chat session first
+        if (isFirstMessage) {
+            fetch('/start_chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: currentChatId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    isFirstMessage = false;
+                    performSearchRequest(searchPrompt, timestamp);
+                } else {
+                    hideTypingIndicator();
+                    console.error('Failed to create chat session:', data.message);
+                    addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
+                }
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                console.error('Error creating chat session:', error);
+                addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
+            });
+        } else {
+            performSearchRequest(searchPrompt, timestamp);
+        }
+        
+        // Save this message to the chat history
+        saveMessageToHistory(currentChatId, {
+            text: message,
+            sender: 'user',
+            timestamp: timestamp
+        });
+        
+        // Update chat title if needed
+        if (isFirstMessage) {
+            updateChatTitleBasedOnExchange(message);
+        }
+    }
+    
+    /**
+     * Send search request to the server with explicit search flag
+     */
+    function performSearchRequest(searchPrompt, timestamp) {
+        fetch('/send_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: searchPrompt,
+                chat_id: currentChatId,
+                timestamp: timestamp,
+                is_search: true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide typing indicator
+            hideTypingIndicator();
+            
+            // Add the bot response to the UI
+            addMessageToUI(data.text, 'bot', new Date().toISOString());
+            
+            // Save the bot response to chat history
+            saveMessageToHistory(currentChatId, {
+                text: data.text,
+                sender: 'bot',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Update chat title if needed
+            if (isFirstMessage) {
+                updateChatTitleBasedOnExchange(searchPrompt, data.text);
+            }
+        })
+        .catch(error => {
+            hideTypingIndicator();
+            console.error('Error sending message:', error);
+            addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot', new Date().toISOString());
+        });
+    }
