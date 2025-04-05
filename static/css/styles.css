@@ -756,25 +756,27 @@ button:focus, textarea:focus, input:focus {
 .copy-btn {
     position: absolute;
     top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    background-color: transparent;
-    border: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     color: var(--spring-brown);
-    opacity: 0.5;
+    opacity: 0.7;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-right: 5px;
 }
 
 .copy-btn:hover {
     opacity: 1;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
     transform: scale(1.1);
 }
 
