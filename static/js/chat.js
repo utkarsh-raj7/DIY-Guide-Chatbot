@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleSidebarButton = document.getElementById('toggle-sidebar');
     const sidebar = document.querySelector('.sidebar');
     const suggestionChips = document.querySelectorAll('.suggestion-chip');
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     
     // Chat state
     let currentChatId = createNewChat();
@@ -24,10 +25,27 @@ document.addEventListener('DOMContentLoaded', function() {
         currentChatId = createNewChat();
         clearMessages();
         displayWelcomeMessage();
+        // Close sidebar on mobile after creating new chat
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+        }
     });
     
     toggleSidebarButton.addEventListener('click', function() {
         sidebar.classList.toggle('collapsed');
+        if (window.innerWidth <= 768) {
+            sidebar.classList.toggle('active');
+        }
+    });
+    
+    // Handle mobile sidebar close when clicking outside
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !mobileMenuToggle.contains(e.target) &&
+            sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
     });
     
     // Initialize suggestion chips
@@ -98,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 sender: 'bot',
                 timestamp: data.timestamp
             });
+            
+            // Update title based on first exchange
+            updateChatTitleBasedOnExchange();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -123,6 +144,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
+     * Updates the chat title based on the first exchange
+     */
+    function updateChatTitleBasedOnExchange() {
+        const messages = getMessagesFromStorage(currentChatId);
+        if (messages.length >= 2) {
+            const firstUserMsg = messages.find(m => m.sender === 'user');
+            if (firstUserMsg) {
+                const title = firstUserMsg.text.length > 25 ? 
+                    firstUserMsg.text.substring(0, 25) + '...' : 
+                    firstUserMsg.text;
+                
+                updateChatTitleInStorage(currentChatId, title);
+                updateChatHistoryUI();
+            }
+        }
+    }
+    
+    /**
      * Adds a message to the UI
      */
     function addMessageToUI(text, sender, timestamp) {
@@ -132,8 +171,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(timestamp);
         const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
+        const senderIcon = sender === 'bot' ? 
+            '<i class="fas fa-tools me-2"></i>' : 
+            '<i class="fas fa-user me-2"></i>';
+        
         messageDiv.innerHTML = `
-            <div class="message-content">${formatMessageText(text)}</div>
+            <div class="message-content">${senderIcon}${formatMessageText(text)}</div>
             <div class="message-timestamp">${formattedTime}</div>
         `;
         
@@ -200,12 +243,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const welcomeDiv = document.createElement('div');
         welcomeDiv.classList.add('welcome-message');
         welcomeDiv.innerHTML = `
-            <h2>Welcome to the DIY Guide!</h2>
-            <p>Ask me anything about DIY projects for the summer. I'm here to help!</p>
+            <h2><i class="fas fa-sun me-2"></i>Welcome to the DIY Guide!</h2>
+            <p>Ask me anything about DIY projects for the summer. I'm here to help with your creative ideas!</p>
             <div class="suggestion-chips">
-                <button class="suggestion-chip" data-message="How do I build a deck?">How do I build a deck?</button>
-                <button class="suggestion-chip" data-message="Simple garden crafts for kids">Simple garden crafts for kids</button>
-                <button class="suggestion-chip" data-message="DIY summer party decorations">DIY summer party decorations</button>
+                <button class="suggestion-chip" data-message="How do I build a deck?">
+                    <i class="fas fa-hammer me-1"></i> How do I build a deck?
+                </button>
+                <button class="suggestion-chip" data-message="Simple garden crafts for kids">
+                    <i class="fas fa-child me-1"></i> Simple garden crafts for kids
+                </button>
+                <button class="suggestion-chip" data-message="DIY summer party decorations">
+                    <i class="fas fa-birthday-cake me-1"></i> DIY summer party decorations
+                </button>
+                <button class="suggestion-chip" data-message="Upcycling projects for summer">
+                    <i class="fas fa-recycle me-1"></i> Upcycling projects for summer
+                </button>
             </div>
         `;
         
@@ -260,11 +312,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return bTimestamp - aTimestamp;
         });
         
+        if (sortedChatIds.length === 0) {
+            const emptyItem = document.createElement('li');
+            emptyItem.className = 'dropdown-item text-center text-muted';
+            emptyItem.textContent = 'No chat history yet';
+            historyList.appendChild(emptyItem);
+            return;
+        }
+        
         sortedChatIds.forEach(chatId => {
             const chat = chats[chatId];
             const li = document.createElement('li');
             li.classList.add('history-item');
             li.dataset.chatId = chatId;
+            
+            // Add active class for current chat
+            if (chatId === currentChatId) {
+                li.classList.add('active');
+            }
             
             li.innerHTML = `
                 <span class="history-item-title">${chat.title}</span>
@@ -274,18 +339,27 @@ document.addEventListener('DOMContentLoaded', function() {
             li.querySelector('.history-item-title').addEventListener('click', function() {
                 currentChatId = chatId;
                 loadChat(chatId);
+                
+                // Close sidebar on mobile after selecting chat
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
             });
             
             li.querySelector('.history-item-delete').addEventListener('click', function(e) {
                 e.stopPropagation();
-                deleteChatFromStorage(chatId);
-                updateChatHistoryUI();
                 
-                // If we deleted the current chat, create a new one
-                if (chatId === currentChatId) {
-                    currentChatId = createNewChat();
-                    clearMessages();
-                    displayWelcomeMessage();
+                // Confirm before deleting
+                if (confirm('Are you sure you want to delete this chat?')) {
+                    deleteChatFromStorage(chatId);
+                    updateChatHistoryUI();
+                    
+                    // If we deleted the current chat, create a new one
+                    if (chatId === currentChatId) {
+                        currentChatId = createNewChat();
+                        clearMessages();
+                        displayWelcomeMessage();
+                    }
                 }
             });
             
@@ -310,4 +384,9 @@ document.addEventListener('DOMContentLoaded', function() {
             addMessageToUI(msg.text, msg.sender, msg.timestamp);
         });
     }
+    
+    // Focus on input field when page loads
+    setTimeout(() => {
+        messageInput.focus();
+    }, 500);
 });
