@@ -94,15 +94,10 @@
                 <!-- Input Area -->
                 <div class="input-container">
                     <div class="audio-controls">
-                        <!-- Voice controls -->
-                        <div class="voice-buttons">
-                            <button id="record-btn" class="btn btn-circle" title="Record audio message">
-                                <i class="fas fa-microphone"></i>
-                            </button>
-                            <button id="volume-btn" class="btn btn-circle btn-tts" title="Toggle text-to-speech">
-                                <i class="fas fa-volume-mute"></i>
-                            </button>
-                        </div>
+                        <!-- Voice menu and controls will be added here via JavaScript -->
+                        <button id="record-btn" class="btn btn-circle" title="Record audio message">
+                            <i class="fas fa-microphone"></i>
+                        </button>
                         <div id="recording-indicator" class="recording-indicator d-none">
                             <span class="recording-pulse"></span>
                             <span class="recording-text">Recording...</span>
@@ -110,13 +105,6 @@
                         <div id="audio-player" class="audio-player d-none">
                             <audio id="audio-element" controls></audio>
                             <button id="send-audio-btn" class="btn btn-sm btn-primary" title="Send audio">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                            <button id="cancel-audio-btn" class="btn btn-sm btn-danger" title="Cancel">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                             <button id="cancel-audio-btn" class="btn btn-sm btn-danger" title="Cancel">
