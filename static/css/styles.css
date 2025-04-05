@@ -1179,3 +1179,42 @@ button:focus, textarea:focus, input:focus {
     color: #333;
     line-height: 1.4;
 }
+
+/* Voice buttons container */
+.voice-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* TTS button styles */
+.btn-tts {
+    background-color: var(--spring-sage);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-tts:hover {
+    background-color: var(--spring-moss);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-tts.active {
+    background-color: var(--spring-moss);
+    transform: scale(1.05);
+}
+
+/* Fix for mobile layout */
+@media (max-width: 576px) {
+    .voice-buttons {
+        justify-content: center;
+    }
+    
+    .input-container {
+        flex-direction: column;
+        padding-bottom: 20px;
+    }
+    
+    .message-input-wrapper {
+        width: 100%;
+    }
+}
