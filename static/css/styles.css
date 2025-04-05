@@ -12,7 +12,7 @@
     /* Enhanced Gradient definitions */
     --main-gradient: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-moss) 100%);
     --message-gradient: linear-gradient(135deg, var(--spring-yellow) 10%, var(--spring-light-brown) 90%);
-    --button-gradient: linear-gradient(to right, var(--spring-terracotta), var(--spring-yellow));
+    --button-gradient: linear-gradient(to right, var(--spring-terracotta), var(--spring-brown));
     --sidebar-gradient: linear-gradient(to bottom, var(--spring-sage) 0%, var(--spring-yellow) 120%);
     
     /* Spacing and sizing */
