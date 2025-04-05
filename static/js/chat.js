@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggleSidebarBtn) toggleSidebarBtn.addEventListener('click', toggleSidebar);
     if (toggleSidebarReturnBtn) toggleSidebarReturnBtn.addEventListener('click', toggleSidebar);
     if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleMobileSidebar);
-    if (document.getElementById("search-btn")) document.getElementById("search-btn").addEventListener("click", performWebSearch);
     
     // Initialize
     init();
@@ -285,38 +284,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Attach click handler to message copy buttons (delegated)
-        // Attach click handler to message copy buttons (delegated)
         if (messagesContainer) {
             messagesContainer.addEventListener('click', function(e) {
                 if (e.target.classList.contains('copy-btn') || e.target.closest('.copy-btn')) {
                     const button = e.target.classList.contains('copy-btn') ? e.target : e.target.closest('.copy-btn');
-                    const messageId = button.getAttribute('data-message-id');
-                    if (messageId) {
-                        const contentEl = document.getElementById(messageId);
+                    const messageEl = button.closest('.message');
+                    if (messageEl) {
+                        const contentEl = messageEl.querySelector('.message-content');
                         if (contentEl) {
                             copyMessageToClipboard(contentEl.textContent);
                         }
                     }
                 }
             });
-        }
-        // Attach click handler to message copy buttons (delegated)
-        // Attach click handler to message copy buttons (delegated)
-        if (messagesContainer) {
-            messagesContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('copy-btn') || e.target.closest('.copy-btn')) {
-                    const button = e.target.classList.contains('copy-btn') ? e.target : e.target.closest('.copy-btn');
-                    const messageId = button.getAttribute('data-message-id');
-                    if (messageId) {
-                        const contentEl = document.getElementById(messageId);
-                        if (contentEl) {
-                            copyMessageToClipboard(contentEl.textContent);
-                        }
-                    }
-                }
-            });
-        }
-        if (messagesContainer) {
         }
     }
     
@@ -337,31 +317,38 @@ document.addEventListener('DOMContentLoaded', function() {
      * Shows a brief success message when a message is copied
      */
     function showCopyFeedback() {
-    /**
-     * Shows a brief success message when a message is copied
-     */
-    function showCopyFeedback() {
         const feedback = document.createElement('div');
         feedback.className = 'copy-feedback';
         feedback.textContent = 'Copied to clipboard!';
         
         document.body.appendChild(feedback);
         
-        // Add the visible class to trigger the animation
+        // Add styles
+        feedback.style.position = 'fixed';
+        feedback.style.bottom = '20px';
+        feedback.style.left = '50%';
+        feedback.style.transform = 'translateX(-50%)';
+        feedback.style.padding = '8px 16px';
+        feedback.style.backgroundColor = 'var(--spring-moss)';
+        feedback.style.color = 'white';
+        feedback.style.borderRadius = '8px';
+        feedback.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+        feedback.style.zIndex = '1000';
+        feedback.style.opacity = '0';
+        feedback.style.transition = 'opacity 0.3s ease';
+        
+        // Animate in
         setTimeout(() => {
-            feedback.classList.add('visible');
+            feedback.style.opacity = '1';
         }, 10);
         
-        // Remove after animation
+        // Remove after delay
         setTimeout(() => {
-            feedback.classList.remove('visible');
-            
-            // Remove from DOM after fade out
+            feedback.style.opacity = '0';
             setTimeout(() => {
                 document.body.removeChild(feedback);
             }, 300);
         }, 2000);
-    }
     }
     
     /**
@@ -544,10 +531,6 @@ document.addEventListener('DOMContentLoaded', function() {
      * Adds a message to the UI
      */
     function addMessageToUI(text, sender, timestamp) {
-    /**
-     * Adds a message to the UI
-     */
-    function addMessageToUI(text, sender, timestamp) {
         // Create the message element
         const messageEl = document.createElement('div');
         messageEl.className = `message message-${sender}`;
@@ -558,18 +541,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const formattedText = formatMessageText(text);
-        const messageId = 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
         
         messageEl.innerHTML = `
             <div class="message-avatar">
                 ${avatarIcon}
             </div>
             <div class="message-bubble">
-                <div class="message-content" id="${messageId}">${formattedText}</div>
+                <div class="message-content">${formattedText}</div>
                 <div class="message-footer">
-                    <button class="copy-btn" title="Copy message" data-message-id="${messageId}">
-                        <i class="fas fa-copy"></i>
-                    </button>
+                    ${sender === 'bot' ? '<button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>' : ''}
                 </div>
             </div>
         `;
@@ -579,7 +559,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll to the bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
     }
     
     /**
@@ -817,148 +796,3 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle('mobile-visible');
     }
 });
-
-    /**
-     * Perform a web search for DIY information
-     */
-    function performWebSearch() {
-        const message = messageInput.value.trim();
-        
-        if (!message) return;
-        
-        // Create a search prompt
-        const searchPrompt = `DIY ${message}`;
-        
-        // Add the message to the UI
-        const timestamp = new Date().toISOString();
-        addMessageToUI(message, 'user', timestamp);
-        
-        // Clear the input field
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
-        
-        // Show typing indicator
-        showTypingIndicator();
-        
-        // If this is the first message, create a chat session first
-        if (isFirstMessage) {
-            fetch('/start_chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    chat_id: currentChatId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    isFirstMessage = false;
-                    performSearchRequest(searchPrompt, timestamp);
-                } else {
-                    hideTypingIndicator();
-                    console.error('Failed to create chat session:', data.message);
-                    addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
-                }
-            })
-            .catch(error => {
-                hideTypingIndicator();
-                console.error('Error creating chat session:', error);
-                addMessageToUI('Sorry, I encountered an error creating a new chat session. Please try again.', 'bot', new Date().toISOString());
-            });
-        } else {
-            performSearchRequest(searchPrompt, timestamp);
-        }
-        
-        // Save this message to the chat history
-        saveMessageToHistory(currentChatId, {
-            text: message,
-            sender: 'user',
-            timestamp: timestamp
-        });
-        
-        // Update chat title if needed
-        if (isFirstMessage) {
-            updateChatTitleBasedOnExchange(message);
-        }
-    }
-    
-    /**
-     * Send search request to the server with explicit search flag
-     */
-    function performSearchRequest(searchPrompt, timestamp) {
-        fetch('/send_message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: searchPrompt,
-                chat_id: currentChatId,
-                timestamp: timestamp,
-                is_search: true
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Hide typing indicator
-            hideTypingIndicator();
-            
-            // Add the bot response to the UI
-            addMessageToUI(data.text, 'bot', new Date().toISOString());
-            
-            // Save the bot response to chat history
-            saveMessageToHistory(currentChatId, {
-                text: data.text,
-                sender: 'bot',
-                timestamp: new Date().toISOString()
-            });
-            
-            // Update chat title if needed
-            if (isFirstMessage) {
-                updateChatTitleBasedOnExchange(searchPrompt, data.text);
-            }
-        })
-        .catch(error => {
-            hideTypingIndicator();
-            console.error('Error sending message:', error);
-            addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot', new Date().toISOString());
-        });
-    }
-
-    /**
-     * Adds a search button event listener
-     */
-    function addSearchButtonListener() {
-        const searchBtn = document.getElementById('search-btn');
-        if (searchBtn) {
-            searchBtn.addEventListener('click', function() {
-                const searchPrompt = "Search for DIY projects: " + 
-                                     (messageInput.value || "popular spring and summer DIY projects");
-                
-                // Show typing indicator
-                showTypingIndicator();
-                
-                // Create a timestamp
-                const timestamp = new Date().toISOString();
-                
-                // Add user message to UI with search icon
-                const userMessage = `🔍 Searching for: ${messageInput.value || "popular DIY projects"}`;
-                addMessageToUI(userMessage, 'user', timestamp);
-                
-                // Save to chat history
-                saveMessageToHistory(currentChatId, {
-                    text: userMessage,
-                    sender: 'user',
-                    timestamp: timestamp
-                });
-                
-                // Perform search with explicit search flag
-                performSearchRequest(searchPrompt, timestamp);
-                
-                // Clear input
-                messageInput.value = '';
-            });
-        }
-    }

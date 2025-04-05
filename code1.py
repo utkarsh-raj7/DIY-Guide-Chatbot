@@ -81,23 +81,15 @@ def get_web_search_results(query):
         print(f"Error performing web search: {e}")
         return ""
 
-def get_bot_response(chat_session, user_prompt, force_search=False):
+def get_bot_response(chat_session, user_prompt):
     """
     Sends the user prompt to the Gemini API using the chat session 
     and returns the bot's response with optional web search results.
-    
-    Args:
-        chat_session: The current chat session with history
-        user_prompt: The user's input message
-        force_search: If True, always perform web search regardless of content
     """
     try:
         # First, check if this is a query that would benefit from web search
         should_search = any(term in user_prompt.lower() for term in 
                            ['how to', 'guide', 'tutorial', 'instructions', 'diy', 'make', 'create'])
-        
-        # Explicitly force search if requested
-        should_search = should_search or force_search
         
         # Extract direct search terms from the user prompt
         direct_search_query = None
@@ -119,13 +111,9 @@ def get_bot_response(chat_session, user_prompt, force_search=False):
         # Determine which search query to use (prioritize model's suggestion)
         final_search_query = search_query or direct_search_query
             
-        # Get web search results if we have a query or force_search is True
+        # Get web search results if we have a query
         search_results = ""
-        if final_search_query or force_search:
-            # Use the user prompt directly if we have force_search but no query
-            if force_search and not final_search_query:
-                final_search_query = user_prompt
-                
+        if final_search_query:
             # Add "DIY" or relevant context if not already in the query
             if "diy" not in final_search_query.lower() and "how to" not in final_search_query.lower():
                 final_search_query = f"DIY {final_search_query}"

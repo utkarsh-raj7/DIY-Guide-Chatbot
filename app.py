@@ -57,14 +57,13 @@ def send_message():
         user_message = request.json.get('message', '')
         chat_id = request.json.get('chat_id', 'default')
         timestamp = request.json.get('timestamp')
-        is_search = request.json.get('is_search', False)
         
         # Get or create the chat session
         if chat_id not in chat_sessions:
             chat_sessions[chat_id] = start_chat_session()
         
         # Get the response from the model
-        bot_response = get_bot_response(chat_sessions[chat_id], user_message, force_search=is_search)
+        bot_response = get_bot_response(chat_sessions[chat_id], user_message)
         
         # Return the response
         return jsonify({
