@@ -10,7 +10,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     
     // Chat state
-    let currentChatId = createNewChat();
+    let currentChatId;
+    
+    // Initialize chat
+    function init() {
+        // Load chat history or create new chat
+        const chats = getAllChatsFromStorage();
+        if (Object.keys(chats).length > 0) {
+            // Load the most recent chat
+            const sortedChatIds = Object.keys(chats).sort((a, b) => {
+                const aTimestamp = parseInt(a.split('_')[1]);
+                const bTimestamp = parseInt(b.split('_')[1]);
+                return bTimestamp - aTimestamp;
+            });
+            
+            currentChatId = sortedChatIds[0];
+            loadChat(currentChatId);
+        } else {
+            // Create a new chat if none exists
+            currentChatId = createNewChat();
+            displayWelcomeMessage();
+        }
+    }
     
     // Event Listeners
     sendButton.addEventListener('click', sendMessage);
@@ -243,20 +264,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const welcomeDiv = document.createElement('div');
         welcomeDiv.classList.add('welcome-message');
         welcomeDiv.innerHTML = `
-            <h2><i class="fas fa-sun me-2"></i>Welcome to the DIY Guide!</h2>
-            <p>Ask me anything about DIY projects for the summer. I'm here to help with your creative ideas!</p>
+            <h2><i class="fas fa-leaf me-2"></i>Welcome to the DIY Guide!</h2>
+            <p>Ask me anything about DIY projects for spring and summer. I'm here to help with your creative gardening and home ideas!</p>
             <div class="suggestion-chips">
-                <button class="suggestion-chip" data-message="How do I build a deck?">
-                    <i class="fas fa-hammer me-1"></i> How do I build a deck?
+                <button class="suggestion-chip" data-message="How do I start a spring herb garden?">
+                    <i class="fas fa-seedling me-1"></i> How do I start a spring herb garden?
                 </button>
                 <button class="suggestion-chip" data-message="Simple garden crafts for kids">
                     <i class="fas fa-child me-1"></i> Simple garden crafts for kids
                 </button>
-                <button class="suggestion-chip" data-message="DIY summer party decorations">
-                    <i class="fas fa-birthday-cake me-1"></i> DIY summer party decorations
+                <button class="suggestion-chip" data-message="DIY spring party decorations">
+                    <i class="fas fa-birthday-cake me-1"></i> DIY spring party decorations
                 </button>
-                <button class="suggestion-chip" data-message="Upcycling projects for summer">
-                    <i class="fas fa-recycle me-1"></i> Upcycling projects for summer
+                <button class="suggestion-chip" data-message="Sustainable gardening projects">
+                    <i class="fas fa-recycle me-1"></i> Sustainable gardening projects
                 </button>
             </div>
         `;
@@ -292,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadChat(currentChatId);
         } else {
             // If no chats exist, display welcome message
+            currentChatId = createNewChat();
             displayWelcomeMessage();
         }
     }
@@ -389,4 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         messageInput.focus();
     }, 500);
+    
+    // Initialize the chat
+    init();
 });

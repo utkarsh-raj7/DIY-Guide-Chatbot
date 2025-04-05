@@ -1,18 +1,19 @@
 :root {
-    /* Enhanced Warm Summer color palette */
-    --summer-orange: #FF7F50;     /* Coral - warmer orange */
-    --summer-yellow: #FFD166;     /* Warm yellow */
-    --summer-rose: #FF6B6B;       /* Warmer rose */
-    --summer-peach: #FFF0E0;      /* Lighter warm peach */
-    --summer-amber: #E85D04;      /* Deep amber orange */
-    --summer-terracotta: #D05546; /* Warm terracotta */
-    --summer-sand: #F8E9D6;       /* Sandy beige */
+    /* Spring-inspired color palette with better contrast */
+    --spring-yellow: #F8E16C;    /* Light yellow */
+    --spring-sage: #8CB369;      /* Sage green */
+    --spring-brown: #5E4C3C;     /* Rich brown */
+    --spring-cream: #FDF6E3;     /* Cream background */
+    --spring-moss: #64943E;      /* Darker green */
+    --spring-terracotta: #BC6C25; /* Terracotta accent */
+    --spring-light-brown: #BFA58E; /* Light brown */
+    --spring-light-green: #C2E0AE; /* Light soft green */
     
     /* Enhanced Gradient definitions */
-    --main-gradient: linear-gradient(135deg, var(--summer-orange) 0%, var(--summer-terracotta) 100%);
-    --message-gradient: linear-gradient(135deg, var(--summer-yellow) 0%, var(--summer-rose) 100%);
-    --button-gradient: linear-gradient(to right, var(--summer-rose), var(--summer-orange));
-    --sidebar-gradient: linear-gradient(to bottom, var(--summer-orange) 0%, var(--summer-amber) 100%);
+    --main-gradient: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-moss) 100%);
+    --message-gradient: linear-gradient(135deg, var(--spring-yellow) 10%, var(--spring-light-brown) 90%);
+    --button-gradient: linear-gradient(to right, var(--spring-terracotta), var(--spring-brown));
+    --sidebar-gradient: linear-gradient(to bottom, var(--spring-sage) 0%, var(--spring-brown) 120%);
     
     /* Spacing and sizing */
     --sidebar-width: 320px;
@@ -27,8 +28,8 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--summer-peach);
-    color: #333;
+    background-color: var(--spring-cream);
+    color: var(--spring-brown);
     overflow: hidden;
     height: 100vh;
 }
@@ -91,7 +92,7 @@ body {
     border-radius: 50%;
     border: none;
     background-color: white;
-    color: var(--summer-amber);
+    color: var(--spring-moss);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -141,9 +142,12 @@ body {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: var(--summer-peach);
-    background-image: radial-gradient(var(--summer-sand) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-color: var(--spring-cream);
+    background-image: 
+        radial-gradient(var(--spring-light-green) 1px, transparent 1px),
+        radial-gradient(var(--spring-light-brown) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
 }
 
 .welcome-message {
@@ -153,11 +157,11 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     animation: fadeIn 0.5s ease;
-    border-left: 5px solid var(--summer-amber);
+    border-left: 5px solid var(--spring-sage);
 }
 
 .welcome-message h2 {
-    color: var(--summer-amber);
+    color: var(--spring-brown);
     margin-bottom: 15px;
     font-weight: bold;
 }
@@ -170,7 +174,7 @@ body {
 }
 
 .suggestion-chip {
-    background-color: var(--summer-orange);
+    background-color: var(--spring-sage);
     color: white;
     border: none;
     border-radius: 20px;
@@ -182,7 +186,7 @@ body {
 }
 
 .suggestion-chip:hover {
-    background-color: var(--summer-amber);
+    background-color: var(--spring-moss);
     transform: translateY(-3px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
@@ -199,7 +203,7 @@ body {
 .message-user {
     align-self: flex-end;
     background: var(--message-gradient);
-    color: white;
+    color: var(--spring-brown);
     border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
     margin-left: auto;
 }
@@ -209,7 +213,7 @@ body {
     background: white;
     border-radius: var(--border-radius) var(--border-radius) var(--border-radius) 0;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-left: 4px solid var(--summer-amber);
+    border-left: 4px solid var(--spring-sage);
 }
 
 .message-content {
@@ -255,8 +259,8 @@ body {
 
 #message-input:focus {
     outline: none;
-    border-color: var(--summer-orange);
-    box-shadow: 0 0 0 3px rgba(255, 127, 80, 0.2);
+    border-color: var(--spring-sage);
+    box-shadow: 0 0 0 3px rgba(140, 179, 105, 0.2);
 }
 
 .send-btn {
@@ -301,7 +305,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--summer-terracotta);
+    background-color: var(--spring-terracotta);
     border: none;
     color: white;
     transition: all 0.2s ease;
@@ -310,7 +314,7 @@ body {
 
 .btn-circle:hover {
     transform: scale(1.1);
-    background-color: var(--summer-amber);
+    background-color: var(--spring-brown);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -319,7 +323,7 @@ body {
     align-items: center;
     margin-left: 12px;
     padding: 6px 12px;
-    background-color: rgba(255, 107, 107, 0.15);
+    background-color: rgba(188, 108, 37, 0.15);
     border-radius: 20px;
 }
 
@@ -327,13 +331,13 @@ body {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background-color: #ff3b3b;
+    background-color: var(--spring-terracotta);
     margin-right: 8px;
     animation: pulse 1.5s infinite;
 }
 
 .recording-text {
-    color: #ff3b3b;
+    color: var(--spring-terracotta);
     font-size: 0.9rem;
     font-weight: 600;
 }
@@ -384,7 +388,7 @@ body {
     top: 0;
     bottom: 0;
     width: 4px;
-    background-color: white;
+    background-color: var(--spring-yellow);
     border-radius: 0 2px 2px 0;
 }
 
@@ -416,7 +420,7 @@ body {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--summer-amber);
+    background-color: var(--spring-sage);
     display: inline-block;
     animation: bounce 1.2s infinite ease-in-out;
 }
@@ -498,14 +502,15 @@ body {
     padding: 6px 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background-color: var(--spring-yellow);
+    color: var(--spring-brown);
+    border: 1px solid rgba(94, 76, 60, 0.3);
 }
 
 .summer-theme-info .badge:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(248, 225, 108, 0.9);
 }
 
 /* Enhanced responsive fixes */
@@ -575,7 +580,7 @@ body {
 
 /* Improved focus effects for accessibility */
 button:focus, textarea:focus, input:focus {
-    outline: 2px solid var(--summer-yellow);
+    outline: 2px solid var(--spring-yellow);
     outline-offset: 2px;
 }
 
@@ -589,10 +594,33 @@ button:focus, textarea:focus, input:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--summer-amber);
+    background-color: var(--spring-brown);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--summer-terracotta);
+    background-color: var(--spring-terracotta);
+}
+
+/* Links in messages */
+.message a {
+    color: var(--spring-terracotta);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.message a:hover {
+    color: var(--spring-brown);
+    text-decoration: none;
+}
+
+.message-user a {
+    color: var(--spring-brown);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.message-user a:hover {
+    color: #3a3026;
+    text-decoration: none;
 }
