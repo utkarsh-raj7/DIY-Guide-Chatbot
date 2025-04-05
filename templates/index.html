@@ -115,6 +115,12 @@
                     
                     <div class="message-input-wrapper">
                         <textarea id="message-input" class="form-control" placeholder="Type your DIY question here..." rows="1"></textarea>
+                        <button id="web-search-btn" class="btn btn-secondary search-btn" title="Search the web">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button id="web-search-btn" class="btn btn-secondary search-btn" title="Search the web">
+                            <i class="fas fa-search"></i>
+                        </button>
                         <button id="send-btn" class="btn btn-primary send-btn" title="Send message">
                             <i class="fas fa-paper-plane"></i>
                         </button>
@@ -125,6 +131,30 @@
     </div>
 
     <!-- Bootstrap Bundle with Popper -->
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <!-- Search Popup -->
+    <div class="search-overlay" id="search-overlay"></div>
+    <div class="search-popup" id="search-popup">
+        <div class="search-popup-header">
+            <h4><i class="fas fa-search me-2"></i>Web Search</h4>
+            <button id="search-popup-close" class="search-popup-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="search-popup-form">
+            <form id="search-form">
+                <div class="mb-3">
+                    <label for="search-query" class="form-label">Search Query</label>
+                    <input type="text" class="form-control" id="search-query" placeholder="Enter search terms...">
+                    <div class="form-text">This query was generated based on your conversation. You can edit it before searching.</div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Tone.js for audio processing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>

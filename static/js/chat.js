@@ -796,3 +796,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle('mobile-visible');
     }
 });
+    // Expose functions for search.js
+    window.addMessageToUI = addMessageToUI;
+    window.showTypingIndicator = showTypingIndicator;
+    window.hideTypingIndicator = hideTypingIndicator;
