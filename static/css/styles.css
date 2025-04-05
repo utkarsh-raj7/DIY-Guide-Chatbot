@@ -565,6 +565,90 @@ button:focus, textarea:focus, input:focus {
     text-decoration: none;
 }
 
+/* Message avatar styles */
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--spring-light-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    margin: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top: 10px;
+    z-index: 2;
+}
+
+.message-bot .message-avatar {
+    background-color: var(--spring-sage);
+    left: -18px;
+}
+
+.message-user .message-avatar {
+    background-color: var(--spring-terracotta);
+    right: -18px;
+}
+
+/* Search results styling */
+.search-results-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f9f2;
+    border-radius: 12px;
+    border-left: 4px solid var(--spring-sage);
+}
+
+.search-results-section h3 {
+    margin-top: 0;
+    color: var(--spring-moss);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.search-result {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.search-result:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.search-result-title {
+    display: block;
+    font-weight: 600;
+    color: var(--spring-terracotta);
+    margin-bottom: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.search-result-title:hover {
+    text-decoration: underline;
+}
+
+.search-result-url {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.search-result-snippet {
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.4;
+}
+
 
 /* Make About Us text dark */
 .about-section p {
@@ -1010,4 +1094,88 @@ button:focus, textarea:focus, input:focus {
         opacity: 1;
         transform: translate(-50%, 0);
     }
+}
+
+/* Message avatar styles */
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--spring-light-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    margin: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top: 10px;
+    z-index: 2;
+}
+
+.message-bot .message-avatar {
+    background-color: var(--spring-sage);
+    left: -18px;
+}
+
+.message-user .message-avatar {
+    background-color: var(--spring-terracotta);
+    right: -18px;
+}
+
+/* Search results styling */
+.search-results-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f9f2;
+    border-radius: 12px;
+    border-left: 4px solid var(--spring-sage);
+}
+
+.search-results-section h3 {
+    margin-top: 0;
+    color: var(--spring-moss);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.search-result {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.search-result:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.search-result-title {
+    display: block;
+    font-weight: 600;
+    color: var(--spring-terracotta);
+    margin-bottom: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.search-result-title:hover {
+    text-decoration: underline;
+}
+
+.search-result-url {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.search-result-snippet {
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.4;
 }
