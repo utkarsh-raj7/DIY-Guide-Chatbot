@@ -186,13 +186,6 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.message-user {
-    align-self: flex-end;
-    background: var(--message-gradient);
-    color: var(--spring-brown);
-    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
-    margin-left: auto;
-}
 
 .message-bot {
     align-self: flex-start;
@@ -612,13 +605,6 @@ button:focus, textarea:focus, input:focus {
 
 
 /* Improved user message background */
-.message-user {
-    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
-    color: var(--spring-brown);
-    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
 /* White New Chat button with gradient text */
 
 /* Remove the old button styles */
@@ -681,4 +667,14 @@ button:focus, textarea:focus, input:focus {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     background-color: var(--spring-brown) !important;
     color: white !important;
+}
+/* Updated user message background with more subtle sage-to-yellow gradient */
+.message-user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
+    color: var(--spring-brown);
+    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-left: auto;
 }
