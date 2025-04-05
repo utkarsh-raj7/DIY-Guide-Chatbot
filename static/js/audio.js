@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-btn');
     
-    // Create voice menu button
+    // Create voice menu button - only for TTS now
     createVoiceControls();
     
     // Audio state
@@ -26,22 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const voiceControls = document.getElementById('voice-controls');
     const ttsToggleBtn = document.getElementById('tts-toggle-btn');
     
-    // Check for browser support
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error('Audio recording is not supported in this browser');
-        if (recordBtn) {
-            recordBtn.disabled = true;
-            recordBtn.title = 'Audio recording not supported in this browser';
-        }
-    }
-    
-    // Event Listeners
-    if (recordBtn) recordBtn.addEventListener('click', toggleRecording);
-    if (sendAudioBtn) sendAudioBtn.addEventListener('click', sendAudioMessage);
-    if (cancelAudioBtn) cancelAudioBtn.addEventListener('click', cancelAudioRecording);
-    if (voiceMenuBtn) voiceMenuBtn.addEventListener('click', toggleVoiceMenu);
-    if (ttsToggleBtn) ttsToggleBtn.addEventListener('click', toggleTTS);
-
     // Initialize speech recognition if available
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
@@ -89,8 +73,24 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('Speech recognition not supported in this browser');
     }
     
+    // Check for browser support
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('Audio recording is not supported in this browser');
+        if (recordBtn) {
+            recordBtn.disabled = true;
+            recordBtn.title = 'Audio recording not supported in this browser';
+        }
+    }
+    
+    // Event Listeners
+    if (recordBtn) recordBtn.addEventListener('click', toggleRecording);
+    if (sendAudioBtn) sendAudioBtn.addEventListener('click', sendAudioMessage);
+    if (cancelAudioBtn) cancelAudioBtn.addEventListener('click', cancelAudioRecording);
+    if (voiceMenuBtn) voiceMenuBtn.addEventListener('click', toggleVoiceMenu);
+    if (ttsToggleBtn) ttsToggleBtn.addEventListener('click', toggleTTS);
+    
     /**
-     * Creates the voice control menu
+     * Creates the voice control menu (only for TTS now)
      */
     function createVoiceControls() {
         // Create the container for the voice controls
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuBtn = document.createElement('button');
         menuBtn.id = 'voice-menu-btn';
         menuBtn.className = 'btn btn-circle voice-menu-btn';
-        menuBtn.title = 'Voice controls';
+        menuBtn.title = 'Voice settings';
         menuBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
         
         // Create the voice controls dropdown
@@ -115,16 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ttsBtn.className = 'voice-control-btn';
         ttsBtn.innerHTML = '<i class="fas fa-volume-up"></i> Text-to-Speech';
         
-        // Add the speech-to-text button
-        const sttBtn = document.createElement('button');
-        sttBtn.id = 'stt-btn';
-        sttBtn.className = 'voice-control-btn';
-        sttBtn.innerHTML = '<i class="fas fa-microphone"></i> Speech-to-Text';
-        sttBtn.addEventListener('click', startSpeechRecognition);
-        
         // Append the controls
         controls.appendChild(ttsBtn);
-        controls.appendChild(sttBtn);
         
         // Add everything to the page
         audioControls.insertBefore(menuBtn, audioControls.firstChild);
@@ -260,16 +252,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Starts speech recognition for transcription
+     * Toggles audio recording
+     */
+    function toggleRecording() {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            // If browser supports speech recognition, use it directly
+            if (recognition) {
+                startSpeechRecognition();
+            } else {
+                // Fall back to audio recording if speech recognition is not available
+                startRecording();
+            }
+        }
+    }
+    
+    /**
+     * Starts speech recognition for automatic transcription
      */
     function startSpeechRecognition() {
         if (recognition) {
             try {
                 recognition.start();
                 showToast('Listening...', 'microphone', 'var(--spring-moss)');
-                
-                // Close the menu
-                toggleVoiceMenu();
                 
                 // Start recording UI
                 isRecording = true;
@@ -299,26 +305,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 30000);
             } catch (error) {
                 console.error('Error starting speech recognition:', error);
-                showErrorToast('Could not start speech recognition. Please try again.');
+                showErrorToast('Could not start speech recognition. Falling back to audio recording.');
+                startRecording(); // Fall back to normal recording
             }
         } else {
-            showErrorToast('Speech recognition is not supported in your browser.');
-        }
-    }
-    
-    /**
-     * Toggles audio recording
-     */
-    function toggleRecording() {
-        if (isRecording) {
-            stopRecording();
-        } else {
+            // If speech recognition is not available, fall back to normal recording
             startRecording();
         }
     }
     
     /**
-     * Starts audio recording
+     * Starts audio recording (for browsers without speech recognition)
      */
     function startRecording() {
         navigator.mediaDevices.getUserMedia({ audio: true })
