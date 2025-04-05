@@ -483,15 +483,6 @@ body {
     gap: 5px;
 }
 
-.summer-theme-info .badge {
-    font-weight: 500;
-    padding: 6px 12px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s;
-    background-color: var(--spring-yellow);
-    color: var(--spring-brown);
-    border: 1px solid rgba(94, 76, 60, 0.3);
-}
 
 .summer-theme-info .badge:hover {
     transform: translateY(-2px);
@@ -635,22 +626,59 @@ button:focus, textarea:focus, input:focus {
 /* Completely opaque white button with colored text */
 
 /* Completely opaque white button with brown text */
+
+/* Brown button styles with brown border */
 #new-chat-btn {
-    background: white !important;
+    background: var(--spring-light-brown) !important;
     color: var(--spring-brown) !important; /* Rich brown from color palette */
-    border: 1px solid var(--spring-light-brown) !important;
+    border: 1px solid var(--spring-brown) !important;
     border-radius: 10px !important;
     font-weight: 700 !important;
     text-shadow: none !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
     width: 100% !important;
     padding: 12px !important;
     transition: all 0.2s ease !important;
 }
 
 #new-chat-btn:hover {
-    background: white !important;
-    color: var(--spring-terracotta) !important; /* Terracotta on hover */
+    background: var(--spring-brown) !important;
+    color: white !important; /* White text on hover */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
     transform: translateY(-1px) !important;
+}
+/* Custom dropdown button to match new-chat-btn */
+#historyDropdown {
+    background: var(--spring-light-brown) !important;
+    color: var(--spring-brown) !important;
+    border: 1px solid var(--spring-brown) !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    padding: 10px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+#historyDropdown:hover {
+    background: var(--spring-brown) !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+}
+/* Updated badge styles to match the brown color scheme */
+.summer-theme-info .badge {
+    font-weight: 500;
+    padding: 8px 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    background-color: var(--spring-light-brown) !important;
+    color: var(--spring-brown) !important;
+    border: 1px solid var(--spring-brown);
+    border-radius: 20px;
+}
+
+.summer-theme-info .badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background-color: var(--spring-brown) !important;
+    color: white !important;
 }
