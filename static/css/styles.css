@@ -184,7 +184,7 @@ body {
 }
 
 .message-content {
-    padding: 16px;
+    padding: 16px 28px 16px 20px;
     line-height: 1.5;
     position: relative;
     z-index: 1;
@@ -810,10 +810,4 @@ button:focus, textarea:focus, input:focus {
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; transform: translateX(-50%) translateY(20px); }
-}
-
-/* Make the message content position relative for proper copy button positioning */
-.message-content {
-    position: relative;
-    padding-right: 30px; /* Add space for the copy button */
 }
