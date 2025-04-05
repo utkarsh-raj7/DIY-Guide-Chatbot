@@ -5,17 +5,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = document.getElementById('send-btn');
     const newChatButton = document.getElementById('new-chat-btn');
     const toggleSidebarButton = document.getElementById('toggle-sidebar');
+    const toggleSidebarReturnBtn = document.getElementById('toggle-sidebar-return');
     const sidebar = document.querySelector('.sidebar');
     const suggestionChips = document.querySelectorAll('.suggestion-chip');
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     
     // Chat state
     let currentChatId;
     
-    // Initialize chat
+    /**
+     * Initialize the chat interface
+     */
     function init() {
-        // Load chat history or create new chat
+        // Load chat history
         const chats = getAllChatsFromStorage();
+        
         if (Object.keys(chats).length > 0) {
             // Load the most recent chat
             const sortedChatIds = Object.keys(chats).sort((a, b) => {
@@ -59,11 +63,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    if (toggleSidebarReturnBtn) {
+        toggleSidebarReturnBtn.addEventListener('click', function() {
+            sidebar.classList.remove('collapsed');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('active');
+            }
+        });
+    }
+    
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function() {
+            sidebar.classList.add('active');
+        });
+    }
+    
     // Handle mobile sidebar close when clicking outside
     document.addEventListener('click', function(e) {
         if (window.innerWidth <= 768 && 
             !sidebar.contains(e.target) && 
-            !mobileMenuToggle.contains(e.target) &&
+            e.target !== mobileMenuToggle &&
+            !mobileMenuToggle?.contains(e.target) &&
+            e.target !== toggleSidebarButton &&
+            !toggleSidebarButton?.contains(e.target) &&
+            e.target !== toggleSidebarReturnBtn &&
+            !toggleSidebarReturnBtn?.contains(e.target) &&
             sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
         }
