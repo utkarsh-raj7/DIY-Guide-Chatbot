@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (messageEl) {
                         const contentEl = messageEl.querySelector('.message-content');
                         if (contentEl) {
-                            copyMessageToClipboard(contentEl.textContent);
+                            copyMessageToClipboard(contentEl.innerText);
                         }
                     }
                 }
