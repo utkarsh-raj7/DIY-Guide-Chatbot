@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let isRecording = false;
     
     // Add event listeners
-    // Add click event listener to the record button
     if (micButton) {
         micButton.addEventListener('click', function() {
             if (!isRecording) {
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    // Add click event listener to the volume button
     
     if (volumeButton) {
         volumeButton.addEventListener('click', toggleTTS);
