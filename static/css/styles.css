@@ -624,3 +624,13 @@ button:focus, textarea:focus, input:focus {
     color: #3a3026;
     text-decoration: none;
 }
+
+/* Make About Us text dark */
+.about-section p {
+    color: var(--spring-brown);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
