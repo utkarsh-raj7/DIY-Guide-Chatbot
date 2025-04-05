@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIY Guide Chatbot</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <h3 class="mb-4">DIY Guide</h3>
+                <button id="new-chat-btn" class="btn btn-primary mb-4">
+                    <i class="fas fa-plus me-2"></i>New Chat
+                </button>
+            </div>
+            
+            <div class="history-container">
+                <h5 class="history-title">Chat History</h5>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="historyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Recent Chats
+                    </button>
+                    <ul class="dropdown-menu w-100" id="history-list" aria-labelledby="historyDropdown">
+                        <!-- History items will be added here via JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="about-section mt-auto">
+                <h5 class="about-title">About Us</h5>
+                <p>Your summer DIY guide powered by advanced AI. Ask questions about home improvement, crafts, gardening, and more!</p>
+            </div>
+            
+            <button class="toggle-sidebar-btn" id="toggle-sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="chat-container">
+                <!-- Messages will be displayed here -->
+                <div id="messages-container" class="messages-container">
+                    <div class="welcome-message">
+                        <h2>Welcome to the DIY Guide!</h2>
+                        <p>Ask me anything about DIY projects for the summer. I'm here to help!</p>
+                        <div class="suggestion-chips">
+                            <button class="suggestion-chip" data-message="How do I build a deck?">How do I build a deck?</button>
+                            <button class="suggestion-chip" data-message="Simple garden crafts for kids">Simple garden crafts for kids</button>
+                            <button class="suggestion-chip" data-message="DIY summer party decorations">DIY summer party decorations</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="audio-controls">
+                        <button id="record-btn" class="btn btn-circle">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <div id="recording-indicator" class="recording-indicator d-none">
+                            <span class="recording-pulse"></span>
+                            <span class="recording-text">Recording...</span>
+                        </div>
+                        <div id="audio-player" class="audio-player d-none">
+                            <audio id="audio-element" controls></audio>
+                            <button id="send-audio-btn" class="btn btn-sm btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button id="cancel-audio-btn" class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="message-input-wrapper">
+                        <textarea id="message-input" class="form-control" placeholder="Type your DIY question here..." rows="1"></textarea>
+                        <button id="send-btn" class="btn btn-primary send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Tone.js for audio processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
