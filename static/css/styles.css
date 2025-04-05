@@ -632,9 +632,29 @@ button:focus, textarea:focus, input:focus {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
+
+#new-chat-btn:hover {
+    background-color: white;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-image: var(--button-gradient);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Improved user message background */
+.message-user {
+    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
+    color: var(--spring-brown);
+    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 /* White New Chat button with gradient text */
 #new-chat-btn {
     background: white;
+    background-color: white;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
@@ -645,15 +665,11 @@ button:focus, textarea:focus, input:focus {
 }
 
 #new-chat-btn:hover {
-    background: rgba(255, 255, 255, 0.9);
+    background-color: white;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-image: var(--button-gradient);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Improved user message background */
-.message-user {
-    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
-    color: var(--spring-brown);
-    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
 }
