@@ -486,3 +486,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the chat
     init();
 });
+
+// TTS Integration
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize speech synthesis
+    const synth = window.speechSynthesis;
+    
+    // Create a MutationObserver to watch for new bot messages
+    const messagesContainer = document.getElementById('messages-container');
+    if (messagesContainer) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // Check each added node to see if it's a bot message
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.classList && node.classList.contains('message-bot') && window.ttsEnabled) {
+                            // Get the text content and speak it
+                            const messageContent = node.querySelector('.message-content');
+                            if (messageContent) {
+                                speakText(messageContent.textContent);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Start observing the messages container with the configured parameters
+        observer.observe(messagesContainer, { childList: true, subtree: true });
+    }
+    
+    // Function to speak text
+    window.speakText = function(text) {
+        // Cancel any ongoing speech
+        synth.cancel();
+        
+        // Create a new utterance
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
+        // Speak the text
+        synth.speak(utterance);
+    };
+});
