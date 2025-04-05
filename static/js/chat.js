@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * Toggles the sidebar
      */
     function toggleSidebar() {
-        sidebar.classList.toggle('sidebar-collapsed');
+        sidebar.classList.toggle('collapsed');
         document.querySelector('.main-content').classList.toggle('expanded');
     }
     
