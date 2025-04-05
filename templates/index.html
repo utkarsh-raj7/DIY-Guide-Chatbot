@@ -18,7 +18,11 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="logo-container">
-                <h3 class="mb-3"><i class="fas fa-leaf me-2"></i>DIY Guide</h3>
+                <div class="app-logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3 class="mb-2 app-title">DIY Guide</h3>
+                <p class="tagline">Your Creative Companion</p>
                 <button id="new-chat-btn" class="btn btn-primary mb-4">
                     <i class="fas fa-plus me-2"></i>New Chat
                 </button>
@@ -62,7 +66,15 @@
                     <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h4>DIY Guide</h4>
+                    <h4><i class="fas fa-leaf me-2"></i>DIY Guide</h4>
+                </div>
+                
+                <!-- Text-to-Speech toggle button -->
+                <div class="tts-toggle-container">
+                    <button id="tts-toggle" class="btn-tts" title="Toggle Text-to-Speech">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <span class="tts-status">TTS Off</span>
                 </div>
                 
                 <!-- Messages will be displayed here -->
@@ -127,5 +139,69 @@
     <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <!-- Add the TTS functionality -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // TTS functionality
+        const ttsToggle = document.getElementById('tts-toggle');
+        const ttsStatus = document.querySelector('.tts-status');
+        let ttsEnabled = false;
+        
+        // Initialize speech synthesis
+        const synth = window.speechSynthesis;
+        
+        // Toggle TTS functionality
+        ttsToggle.addEventListener('click', function() {
+            ttsEnabled = !ttsEnabled;
+            ttsStatus.textContent = ttsEnabled ? 'TTS On' : 'TTS Off';
+            ttsToggle.classList.toggle('active', ttsEnabled);
+            
+            if (ttsEnabled) {
+                ttsToggle.classList.add('btn-tts-active');
+                ttsStatus.classList.add('tts-status-active');
+            } else {
+                ttsToggle.classList.remove('btn-tts-active');
+                ttsStatus.classList.remove('tts-status-active');
+                // Stop any ongoing speech
+                synth.cancel();
+            }
+        });
+        
+        // Create a MutationObserver to watch for new bot messages
+        const messagesContainer = document.getElementById('messages-container');
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // Check each added node to see if it's a bot message
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.classList && node.classList.contains('message-bot') && ttsEnabled) {
+                            // Get the text content and speak it
+                            const messageText = node.querySelector('.message-content').textContent;
+                            speakText(messageText);
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Start observing the messages container with the configured parameters
+        observer.observe(messagesContainer, { childList: true, subtree: true });
+        
+        // Function to speak text
+        function speakText(text) {
+            // Cancel any ongoing speech
+            synth.cancel();
+            
+            // Create a new utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // Speak the text
+            synth.speak(utterance);
+        }
+    });
+    </script>
 </body>
 </html>
