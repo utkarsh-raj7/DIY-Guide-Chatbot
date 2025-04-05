@@ -123,7 +123,7 @@ def save_audio():
         # Check if the request has a file
         if 'audio' not in request.files:
             return jsonify({
-                'success': False,
+                'status': 'error',
                 'message': 'No audio file provided'
             }), 400
         
@@ -131,41 +131,26 @@ def save_audio():
         
         # Save the file to a temporary location
         temp_dir = tempfile.gettempdir()
-        temp_file_path = os.path.join(temp_dir, f"audio_{datetime.now().timestamp()}.webm")
+        temp_file_path = os.path.join(temp_dir, f"audio_{datetime.now().timestamp()}.wav")
         audio_file.save(temp_file_path)
         
         logger.debug(f"Audio saved to: {temp_file_path}")
         
+        # For now, we'll return a placeholder transcription
         # In a real application, you would process this file with a speech-to-text service
-        # For now, we'll use a realistic example response for testing
         
-        # In production, you would use a service like:
-        # - Google Cloud Speech-to-Text
-        # - Azure Speech Services
-        # - Whisper API
-        
-        # Generate a dummy response based on common DIY topics
-        example_texts = [
-            "How do I start a spring herb garden?",
-            "What are some easy DIY spring decoration ideas?",
-            "Can you suggest sustainable gardening projects?",
-            "I want to build a bird feeder for my garden",
-            "How to make natural plant fertilizers at home?"
-        ]
-        
-        import random
-        transcribed_text = random.choice(example_texts)
-        
+        # Placeholder response - this would be replaced with actual STT implementation
         return jsonify({
-            'success': True,
+            'status': 'success',
             'message': 'Audio received successfully',
-            'text': transcribed_text
+            'transcription': "I'm interested in DIY spring gardening projects.",
+            'audio_path': temp_file_path
         })
         
     except Exception as e:
         logger.error(f"Error saving audio: {e}")
         return jsonify({
-            'success': False,
+            'status': 'error',
             'message': f'Failed to save audio: {str(e)}'
         }), 500
 

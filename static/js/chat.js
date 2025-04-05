@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentChatId = null;
     let isTyping = false;
     let isFirstMessage = true;
-    let currentlySpeaking = false;
-    let activeTtsMessage = null;
     
     // Event Listeners
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);
@@ -53,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Get the text content and speak it
                             const messageContent = node.querySelector('.message-content');
                             if (messageContent) {
-                                speakMessageText(messageContent.textContent, node);
+                                speakText(messageContent.textContent);
                             }
                         }
                     });
@@ -65,14 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(messagesContainer, { childList: true, subtree: true });
     }
     
-    // Function to speak text with controls
-    function speakMessageText(text, messageNode) {
+    // Function to speak text
+    window.speakText = function(text) {
         // Cancel any ongoing speech
         synth.cancel();
-        currentlySpeaking = false;
-        
-        // Remove any existing TTS controls
-        removeTtsControls();
         
         // Create a new utterance
         const utterance = new SpeechSynthesisUtterance(text);
@@ -80,179 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
         utterance.pitch = 1.0;
         utterance.volume = 1.0;
         
-        // Create TTS controls for this message
-        if (messageNode) {
-            createTtsControls(messageNode, utterance);
-        }
-        
-        // Set speaking flag
-        currentlySpeaking = true;
-        activeTtsMessage = messageNode;
-        
-        // Add utterance events
-        utterance.onend = function() {
-            currentlySpeaking = false;
-            updateTtsControlState();
-        };
-        
-        utterance.onpause = function() {
-            updateTtsControlState();
-        };
-        
-        utterance.onresume = function() {
-            updateTtsControlState();
-        };
-        
         // Speak the text
         synth.speak(utterance);
-    }
-    
-    // Create TTS controls for a specific message
-    function createTtsControls(messageNode, utterance) {
-        // Create control container
-        const controlsContainer = document.createElement('div');
-        controlsContainer.className = 'tts-controls';
-        
-        // Create play/pause button
-        const playPauseBtn = document.createElement('button');
-        playPauseBtn.className = 'tts-control-btn tts-pause';
-        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        playPauseBtn.title = 'Pause/Resume speech';
-        
-        // Create stop button
-        const stopBtn = document.createElement('button');
-        stopBtn.className = 'tts-control-btn tts-stop';
-        stopBtn.innerHTML = '<i class="fas fa-times"></i>';
-        stopBtn.title = 'Stop speech';
-        
-        // Add event listeners
-        playPauseBtn.addEventListener('click', function() {
-            if (synth.speaking) {
-                if (synth.paused) {
-                    synth.resume();
-                } else {
-                    synth.pause();
-                }
-                updateTtsControlState();
-            }
-        });
-        
-        stopBtn.addEventListener('click', function() {
-            synth.cancel();
-            currentlySpeaking = false;
-            removeTtsControls();
-        });
-        
-        // Add the buttons to the container
-        controlsContainer.appendChild(playPauseBtn);
-        controlsContainer.appendChild(stopBtn);
-        
-        // Add the container to the message
-        messageNode.appendChild(controlsContainer);
-        
-        // Add CSS for TTS controls
-        addTtsControlStyles();
-    }
-    
-    // Update TTS control button state
-    function updateTtsControlState() {
-        const playPauseBtn = document.querySelector('.tts-pause');
-        if (playPauseBtn) {
-            if (synth.paused) {
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            } else {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            }
-        }
-    }
-    
-    // Remove TTS controls
-    function removeTtsControls() {
-        const controls = document.querySelector('.tts-controls');
-        if (controls) {
-            controls.remove();
-        }
-    }
-    
-    // Add CSS for TTS controls
-    function addTtsControlStyles() {
-        // Check if styles already exist
-        if (document.getElementById('tts-control-styles')) return;
-        
-        const style = document.createElement('style');
-        style.id = 'tts-control-styles';
-        style.textContent = `
-            .tts-controls {
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: var(--spring-sage);
-                color: white;
-                padding: 8px 12px;
-                border-radius: 30px;
-                display: flex;
-                gap: 10px;
-                box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-                animation: fadeInUp 0.3s ease;
-            }
-            
-            .tts-control-btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                border: none;
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            
-            .tts-control-btn:hover {
-                background-color: rgba(255, 255, 255, 0.3);
-                transform: scale(1.05);
-            }
-            
-            .tts-control-btn i {
-                font-size: 14px;
-            }
-            
-            .tts-pause {
-                background-color: white;
-                color: var(--spring-sage);
-            }
-            
-            .tts-stop {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Global access to speech functions
-    window.speakText = function(text) {
-        speakMessageText(text);
-    };
-    
-    window.pauseResumeText = function() {
-        if (synth.speaking) {
-            if (synth.paused) {
-                synth.resume();
-            } else {
-                synth.pause();
-            }
-        }
-    };
-    
-    window.stopSpeaking = function() {
-        synth.cancel();
-        currentlySpeaking = false;
-        removeTtsControls();
     };
     
     /**
@@ -531,6 +354,12 @@ document.addEventListener('DOMContentLoaded', function() {
      * Adds a message to the UI
      */
     function addMessageToUI(text, sender, timestamp) {
+        // Format the timestamp for display
+        const formattedTime = new Date(timestamp).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
         // Create the message element
         const messageEl = document.createElement('div');
         messageEl.className = `message message-${sender}`;
@@ -549,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="message-bubble">
                 <div class="message-content">${formattedText}</div>
                 <div class="message-footer">
+                    <span class="message-time">${formattedTime}</span>
                     ${sender === 'bot' ? '<button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>' : ''}
                 </div>
             </div>
