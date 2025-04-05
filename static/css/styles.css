@@ -184,7 +184,7 @@ body {
 }
 
 .message-content {
-    padding: 16px 38px 16px 20px;
+    padding: 16px 50px 16px 20px;
     line-height: 1.5;
     position: relative;
     z-index: 1;
@@ -320,7 +320,7 @@ body {
 
 .audio-player audio {
     height: 38px;
-    margin-right: 12px;
+    margin-right: 15px;
     border-radius: 18px;
 }
 
@@ -756,7 +756,7 @@ button:focus, textarea:focus, input:focus {
 .copy-btn {
     position: absolute;
     top: 8px;
-    right: 12px;
+    right: 15px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
