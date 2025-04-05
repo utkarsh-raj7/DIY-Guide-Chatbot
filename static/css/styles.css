@@ -186,6 +186,13 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+.message-user {
+    align-self: flex-end;
+    background: var(--message-gradient);
+    color: var(--spring-brown);
+    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+    margin-left: auto;
+}
 
 .message-bot {
     align-self: flex-start;
@@ -225,22 +232,7 @@ body {
     position: relative;
 }
 
-#message-input {
-    border-radius: 24px;
-    padding: 14px 55px 14px 20px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    resize: none;
-    overflow: auto;
-    max-height: 120px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
 
-#message-input:focus {
-    outline: none;
-    border-color: var(--spring-sage);
-    box-shadow: 0 0 0 3px rgba(140, 179, 105, 0.2);
-}
 
 .send-btn {
     position: absolute;
@@ -605,6 +597,13 @@ button:focus, textarea:focus, input:focus {
 
 
 /* Improved user message background */
+.message-user {
+    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
+    color: var(--spring-brown);
+    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 /* White New Chat button with gradient text */
 
 /* Remove the old button styles */
@@ -668,13 +667,28 @@ button:focus, textarea:focus, input:focus {
     background-color: var(--spring-brown) !important;
     color: white !important;
 }
-/* Updated user message background with more subtle sage-to-yellow gradient */
-.message-user {
-    align-self: flex-end;
-    background: linear-gradient(135deg, var(--spring-sage) 0%, var(--spring-yellow) 100%);
+/* Updated text input styles to match brown theme */
+#message-input {
+    border-radius: 24px;
+    padding: 14px 55px 14px 20px;
+    border: 1px solid var(--spring-brown) !important;
+    resize: none;
+    overflow: auto;
+    max-height: 120px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: var(--spring-light-brown) !important;
+    color: var(--spring-brown) !important;
+}
+
+#message-input::placeholder {
     color: var(--spring-brown);
-    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    margin-left: auto;
+    opacity: 0.7;
+}
+
+#message-input:focus {
+    outline: none;
+    border-color: var(--spring-brown) !important;
+    box-shadow: 0 0 0 3px rgba(94, 76, 60, 0.2) !important;
+    background-color: white !important;
 }
