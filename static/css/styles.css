@@ -631,13 +631,11 @@ button:focus, textarea:focus, input:focus {
 /* White New Chat button with gradient text */
 
 /* Remove the old button styles */
+
+/* Completely opaque white button with colored text */
 #new-chat-btn {
     background: white !important;
-    background-color: white !important;
-    color: transparent !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    background-image: var(--button-gradient) !important;
+    color: var(--spring-brown) !important;
     border: 1px solid var(--spring-light-brown) !important;
     border-radius: 10px !important;
     font-weight: 700 !important;
@@ -650,11 +648,7 @@ button:focus, textarea:focus, input:focus {
 
 #new-chat-btn:hover {
     background: white !important;
-    background-color: white !important;
-    color: transparent !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    background-image: var(--button-gradient) !important;
+    color: var(--spring-terracotta) !important;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
     transform: translateY(-1px) !important;
 }
