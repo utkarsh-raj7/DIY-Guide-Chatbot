@@ -751,3 +751,69 @@ button:focus, textarea:focus, input:focus {
     display: flex;
     flex-direction: column;
 }
+
+/* Copy button styles */
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
+    color: var(--spring-brown);
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.copy-btn:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.message-bot .copy-btn {
+    color: var(--spring-moss);
+}
+
+.message-user .copy-btn {
+    color: var(--spring-brown);
+}
+
+/* Copy feedback toast notification */
+.copy-feedback {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--spring-brown);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1500;
+    animation: fadeIn 0.3s ease;
+}
+
+.copy-feedback.fade-out {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+}
+
+/* Make the message content position relative for proper copy button positioning */
+.message-content {
+    position: relative;
+    padding-right: 30px; /* Add space for the copy button */
+}

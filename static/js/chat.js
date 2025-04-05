@@ -111,6 +111,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     /**
+     * Function to copy message text to clipboard
+     */
+    function copyMessageToClipboard(text) {
+        navigator.clipboard.writeText(text).then(
+            function() {
+                showCopyFeedback();
+            }, 
+            function() {
+                console.error('Failed to copy message');
+            }
+        );
+    }
+    
+    /**
+     * Shows a brief success message when a message is copied
+     */
+    function showCopyFeedback() {
+        const feedbackEl = document.createElement('div');
+        feedbackEl.className = 'copy-feedback';
+        feedbackEl.textContent = 'Copied to clipboard!';
+        document.body.appendChild(feedbackEl);
+        
+        // Auto-remove after 2 seconds
+        setTimeout(() => {
+            feedbackEl.classList.add('fade-out');
+            setTimeout(() => {
+                feedbackEl.remove();
+            }, 500);
+        }, 2000);
+    }
+    
+    /**
      * Sends the user message to the server and displays the response
      */
     function sendMessage() {
@@ -221,11 +253,24 @@ document.addEventListener('DOMContentLoaded', function() {
             '<i class="fas fa-leaf me-2"></i>' : 
             '<i class="fas fa-user me-2"></i>';
         
+        // Add copy button to messages
+        const copyButton = `<button class="copy-btn" title="Copy message" aria-label="Copy message">
+            <i class="fas fa-copy"></i>
+        </button>`;
+        
         // Create a more visually appealing message structure
         messageDiv.innerHTML = `
-            <div class="message-content">${senderIcon}${formatMessageText(text)}</div>
+            <div class="message-content">
+                ${senderIcon}${formatMessageText(text)}
+                ${copyButton}
+            </div>
             <div class="message-timestamp">${formattedTime}</div>
         `;
+        
+        // Add event listener to the copy button
+        messageDiv.querySelector('.copy-btn').addEventListener('click', function() {
+            copyMessageToClipboard(text);
+        });
         
         messagesContainer.appendChild(messageDiv);
         
