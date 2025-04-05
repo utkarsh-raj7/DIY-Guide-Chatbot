@@ -285,19 +285,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Attach click handler to message copy buttons (delegated)
+        // Attach click handler to message copy buttons (delegated)
         if (messagesContainer) {
             messagesContainer.addEventListener('click', function(e) {
                 if (e.target.classList.contains('copy-btn') || e.target.closest('.copy-btn')) {
                     const button = e.target.classList.contains('copy-btn') ? e.target : e.target.closest('.copy-btn');
-                    const messageEl = button.closest('.message');
-                    if (messageEl) {
-                        const contentEl = messageEl.querySelector('.message-content');
+                    const messageId = button.getAttribute('data-message-id');
+                    if (messageId) {
+                        const contentEl = document.getElementById(messageId);
                         if (contentEl) {
                             copyMessageToClipboard(contentEl.textContent);
                         }
                     }
                 }
             });
+        }
+        // Attach click handler to message copy buttons (delegated)
+        // Attach click handler to message copy buttons (delegated)
+        if (messagesContainer) {
+            messagesContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('copy-btn') || e.target.closest('.copy-btn')) {
+                    const button = e.target.classList.contains('copy-btn') ? e.target : e.target.closest('.copy-btn');
+                    const messageId = button.getAttribute('data-message-id');
+                    if (messageId) {
+                        const contentEl = document.getElementById(messageId);
+                        if (contentEl) {
+                            copyMessageToClipboard(contentEl.textContent);
+                        }
+                    }
+                }
+            });
+        }
+        if (messagesContainer) {
         }
     }
     
@@ -318,38 +337,31 @@ document.addEventListener('DOMContentLoaded', function() {
      * Shows a brief success message when a message is copied
      */
     function showCopyFeedback() {
+    /**
+     * Shows a brief success message when a message is copied
+     */
+    function showCopyFeedback() {
         const feedback = document.createElement('div');
         feedback.className = 'copy-feedback';
         feedback.textContent = 'Copied to clipboard!';
         
         document.body.appendChild(feedback);
         
-        // Add styles
-        feedback.style.position = 'fixed';
-        feedback.style.bottom = '20px';
-        feedback.style.left = '50%';
-        feedback.style.transform = 'translateX(-50%)';
-        feedback.style.padding = '8px 16px';
-        feedback.style.backgroundColor = 'var(--spring-moss)';
-        feedback.style.color = 'white';
-        feedback.style.borderRadius = '8px';
-        feedback.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
-        feedback.style.zIndex = '1000';
-        feedback.style.opacity = '0';
-        feedback.style.transition = 'opacity 0.3s ease';
-        
-        // Animate in
+        // Add the visible class to trigger the animation
         setTimeout(() => {
-            feedback.style.opacity = '1';
+            feedback.classList.add('visible');
         }, 10);
         
-        // Remove after delay
+        // Remove after animation
         setTimeout(() => {
-            feedback.style.opacity = '0';
+            feedback.classList.remove('visible');
+            
+            // Remove from DOM after fade out
             setTimeout(() => {
                 document.body.removeChild(feedback);
             }, 300);
         }, 2000);
+    }
     }
     
     /**
@@ -532,6 +544,10 @@ document.addEventListener('DOMContentLoaded', function() {
      * Adds a message to the UI
      */
     function addMessageToUI(text, sender, timestamp) {
+    /**
+     * Adds a message to the UI
+     */
+    function addMessageToUI(text, sender, timestamp) {
         // Create the message element
         const messageEl = document.createElement('div');
         messageEl.className = `message message-${sender}`;
@@ -542,15 +558,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const formattedText = formatMessageText(text);
+        const messageId = 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
         
         messageEl.innerHTML = `
             <div class="message-avatar">
                 ${avatarIcon}
             </div>
             <div class="message-bubble">
-                <div class="message-content">${formattedText}</div>
+                <div class="message-content" id="${messageId}">${formattedText}</div>
                 <div class="message-footer">
-                    <button class="copy-btn" title="Copy message"><i class="fas fa-copy"></i></button>
+                    <button class="copy-btn" title="Copy message" data-message-id="${messageId}">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
             </div>
         `;
@@ -560,6 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll to the bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
     }
     
     /**
@@ -905,4 +925,40 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error sending message:', error);
             addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot', new Date().toISOString());
         });
+    }
+
+    /**
+     * Adds a search button event listener
+     */
+    function addSearchButtonListener() {
+        const searchBtn = document.getElementById('search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function() {
+                const searchPrompt = "Search for DIY projects: " + 
+                                     (messageInput.value || "popular spring and summer DIY projects");
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Create a timestamp
+                const timestamp = new Date().toISOString();
+                
+                // Add user message to UI with search icon
+                const userMessage = `🔍 Searching for: ${messageInput.value || "popular DIY projects"}`;
+                addMessageToUI(userMessage, 'user', timestamp);
+                
+                // Save to chat history
+                saveMessageToHistory(currentChatId, {
+                    text: userMessage,
+                    sender: 'user',
+                    timestamp: timestamp
+                });
+                
+                // Perform search with explicit search flag
+                performSearchRequest(searchPrompt, timestamp);
+                
+                // Clear input
+                messageInput.value = '';
+            });
+        }
     }

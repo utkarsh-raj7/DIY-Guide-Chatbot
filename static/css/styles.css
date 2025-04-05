@@ -1251,3 +1251,127 @@ button:focus, textarea:focus, input:focus {
 .message-user .message-footer {
     justify-content: flex-start;
 }
+
+/* Fix the layout of the input section */
+.input-container {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid #eee;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Improved UI controls positioning */
+.audio-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 5px;
+}
+
+/* Fix message avatar positioning */
+.message-avatar {
+    position: relative;
+    top: 0;
+    margin-top: 0;
+    left: 0;
+    right: 0;
+}
+
+.message-bot .message-avatar {
+    margin-right: 8px;
+    left: 0;
+}
+
+.message-user .message-avatar {
+    margin-left: 8px;
+    right: 0;
+}
+
+/* Improved message layout */
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 5px 10px;
+    position: relative;
+}
+
+.message-bot {
+    flex-direction: row;
+}
+
+.message-user {
+    flex-direction: row-reverse;
+}
+
+/* Move search button to top right */
+.search-control {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 100;
+}
+
+/* Fix message bubble width */
+.message-bubble {
+    max-width: calc(100% - 60px);
+    padding: 12px 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Copy feedback styling */
+.copy-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.copy-feedback.visible {
+    opacity: 1;
+}
+
+/* Improve search button styling */
+.search-btn {
+    background-color: #5d7d50;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+    background-color: #4c6a40;
+    transform: scale(1.05);
+}
+
+/* Top header styling */
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
