@@ -184,7 +184,7 @@ body {
 }
 
 .message-content {
-    padding: 16px 28px 16px 20px;
+    padding: 16px 38px 16px 20px;
     line-height: 1.5;
     position: relative;
     z-index: 1;
@@ -756,12 +756,12 @@ button:focus, textarea:focus, input:focus {
 .copy-btn {
     position: absolute;
     top: 8px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     color: var(--spring-brown);
     opacity: 0.7;
     cursor: pointer;
@@ -770,13 +770,13 @@ button:focus, textarea:focus, input:focus {
     align-items: center;
     justify-content: center;
     font-size: 0.85rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-right: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 8px;
 }
 
 .copy-btn:hover {
     opacity: 1;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.9);
     transform: scale(1.1);
 }
 
