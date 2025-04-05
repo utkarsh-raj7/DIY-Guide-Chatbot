@@ -87,53 +87,26 @@ def get_bot_response(chat_session, user_prompt):
     and returns the bot's response with optional web search results.
     """
     try:
-        # First, check if this is a query that would benefit from web search
-        should_search = any(term in user_prompt.lower() for term in 
-                           ['how to', 'guide', 'tutorial', 'instructions', 'diy', 'make', 'create'])
-        
-        # Extract direct search terms from the user prompt
-        direct_search_query = None
-        if should_search:
-            direct_search_query = user_prompt
-        
         # Send the message - the chat session automatically includes history
         response = chat_session.send_message(user_prompt)
         # Extract the text response
         bot_text = response.text
         
-        # Extract search query if present in model response
+        # Extract search query if present
         search_query = extract_search_query(bot_text)
         
         # Clean up the bot response by removing the search query directive
         if search_query:
             bot_text = re.sub(r"SEARCH_QUERY:\s*.+?(?:$|\n)", "", bot_text).strip()
-        
-        # Determine which search query to use (prioritize model's suggestion)
-        final_search_query = search_query or direct_search_query
             
-        # Get web search results if we have a query
-        search_results = ""
-        if final_search_query:
-            # Add "DIY" or relevant context if not already in the query
-            if "diy" not in final_search_query.lower() and "how to" not in final_search_query.lower():
-                final_search_query = f"DIY {final_search_query}"
-                
-            results = search_web(final_search_query)
-            if results:
-                search_results = format_results(results)
-                search_results = f"\n\n<div class='search-results-section'><h3>Related DIY Project Resources:</h3>{search_results}</div>"
+            # Get web search results
+            search_results = get_web_search_results(search_query)
+            
+            # Append search results to response
+            if search_results:
+                bot_text = f"{bot_text}\n{search_results}"
         
-        # Append search results to response
-        if search_results:
-            bot_text = f"{bot_text}{search_results}"
-        
-        # Convert markdown to HTML, but preserve HTML we added
-        html_response = markdown.markdown(bot_text)
-        
-        # Make sure links open in new tabs
-        html_response = html_response.replace('<a href=', '<a target="_blank" rel="noopener noreferrer" href=')
-        
-        return html_response
+        return markdown.markdown(bot_text)
     
     except Exception as e:
         print(f"An error occurred while contacting the Gemini API: {e}")

@@ -41,14 +41,10 @@ def format_results(results):
         url = result.get('href', '#')
         snippet = result.get('body', '')[:150] + '...' if result.get('body') else ''
         
-        # Create a more visually distinct markdown link with title and short description
-        formatted.append(f"""<div class="search-result">
-  <a href="{url}" class="search-result-title">{title}</a>
-  <div class="search-result-url">{url}</div>
-  <div class="search-result-snippet">{snippet}</div>
-</div>""")
+        # Create a markdown link with title and short description
+        formatted.append(f"{i}. [{title}]({url})\n   {snippet}")
     
-    return "\n".join(formatted)
+    return "\n\n".join(formatted)
 
 def extract_search_terms(text):
     """
