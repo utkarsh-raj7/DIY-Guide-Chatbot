@@ -1,57 +1,84 @@
-# MemoryMage
+# DIY-Guide 🤖
 
-A DIY Guide chatbot powered by Google Gemini with memory management that maintains context between chat sessions.
+DIY-Guide is an intelligent assistant that helps you with your crafting and DIY projects. Powered by Google's Gemini AI, it provides personalized guidance, remembers your project context, and even speaks to you!
 
-## Features
+## ✨ Key Features
 
-- Interactive chat interface with a spring theme
-- Text-to-Speech capabilities
-- Voice recording and speech recognition
-- Multi-session memory management
-- Context rebuilding for persistent conversations
+### 🎨 Interactive Chat Interface
 
-## Deploying to Render
+- Beautiful spring-themed design
+- Real-time conversation with visual feedback
+- Support for both text and voice interactions
 
-### Preparing for Deployment
+### 🗣️ Voice Features
 
-Before deploying, it's recommended to clean up cached files to minimize deployment size:
+- Text-to-Speech for hands-free guidance
+- Voice recording capabilities
+- Speech recognition for natural interaction
+
+### 🧠 Smart Memory Management
+
+- Maintains context between chat sessions
+- Remembers your project details and preferences
+- Automatically rebuilds conversation context
+
+### 🛠️ Project Assistance
+
+- Step-by-step DIY guidance
+- Material and tool recommendations
+- Safety tips and best practices
+- Project planning and troubleshooting
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- Google Gemini API key
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
-# Remove Python cache files
-find . -type d -name "__pycache__" -exec rm -rf {} +
-find . -name "*.pyc" -delete
-
-# Clean up any other temporary files
-rm -rf .uv .pytest_cache .coverage htmlcov
+git clone https://github.com/yourusername/diy-guide.git
+cd diy-guide
 ```
 
-This helps reduce deployment time and ensures a cleaner production environment.
+2. Create a `.env` file:
 
-### Manual Deployment
+```bash
+echo "GEMINI_API_KEY=your_api_key_here" > .env
+```
 
-1. Create a new Web Service on Render
-2. Link your GitHub repository
-3. Configure the deployment:
-   - **Name**: memory-mage (or your preferred name)
-   - **Environment**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:$PORT wsgi:app`
-4. Add the following environment variable:
-   - `GEMINI_API_KEY` = Your Google Gemini API key
+3. Install dependencies:
 
-### Blueprint Deployment (Recommended)
+```bash
+pip install -r requirements.txt
+```
 
-1. Make sure your repository contains the `render.yaml` file
-2. Go to the Render Dashboard and click "Blueprint"
-3. Connect your GitHub repository
-4. Render will detect the `render.yaml` file and configure everything automatically
-5. You'll be prompted to enter your `GEMINI_API_KEY`
-6. Click "Apply" and Render will deploy your application
+4. Run the application:
 
-## Local Development
+```bash
+python main.py
+```
 
-1. Clone the repository
-2. Create a `.env` file with your `GEMINI_API_KEY`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run the application: `python main.py`
-5. Access the application at `http://localhost:5001`
+5. Open your browser and visit `http://localhost:5001`
+
+## 🏗️ Deployment
+
+DIY-Guide can be easily deployed to Render using the included `render.yaml` configuration. See the deployment section in the documentation for detailed instructions.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Google Gemini for the AI capabilities
+- Flask for the web framework
+- All contributors and users of DIY-Guide
