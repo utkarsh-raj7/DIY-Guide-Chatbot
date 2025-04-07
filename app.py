@@ -28,18 +28,28 @@ def index():
 
 @app.route('/start_chat', methods=['POST'])
 def create_chat():
-    """Create a new chat session."""
+    """Create a new chat session or validate an existing one."""
     try:
         # Generate a unique chat ID
         chat_id = request.json.get('chat_id', f"chat_{datetime.now().timestamp()}")
         
-        # Create a new chat session
-        chat_sessions[chat_id] = start_chat_session()
+        # Check if this chat session already exists
+        chat_exists = chat_id in chat_sessions
+        
+        # Create a new chat session if it doesn't exist
+        if not chat_exists:
+            chat_sessions[chat_id] = start_chat_session()
+            logger.info(f"Created new chat session: {chat_id}")
+            message = 'Chat session created'
+        else:
+            logger.info(f"Using existing chat session: {chat_id}")
+            message = 'Chat session exists'
         
         return jsonify({
             'status': 'success',
-            'message': 'Chat session created',
-            'chat_id': chat_id
+            'message': message,
+            'chat_id': chat_id,
+            'is_new': not chat_exists
         })
     except Exception as e:
         logger.error(f"Error creating chat session: {e}")
@@ -54,10 +64,30 @@ def send_message():
     try:
         user_message = request.json.get('message', '')
         chat_id = request.json.get('chat_id', 'default')
+        chat_history = request.json.get('chat_history', [])
         
         # Get or create the chat session
         if chat_id not in chat_sessions:
+            logger.info(f"Creating new chat session for existing chat_id: {chat_id}")
+            
+            # Create a new chat session
             chat_sessions[chat_id] = start_chat_session()
+            
+            # If we have chat history from the client, replay it to rebuild context
+            if chat_history:
+                logger.info(f"Rebuilding context from {len(chat_history)} messages")
+                
+                # Process the history in pairs (user message followed by bot response)
+                for i in range(0, len(chat_history) - 1, 2):
+                    if i+1 < len(chat_history):
+                        user_msg = chat_history[i].get('text', '')
+                        # Only send the message to rebuild context, don't care about response
+                        if user_msg:
+                            try:
+                                # Silent message to rebuild context
+                                chat_sessions[chat_id].send_message(user_msg)
+                            except Exception as e:
+                                logger.error(f"Error replaying message during context rebuild: {e}")
         
         # Get the response from the model
         bot_response = get_bot_response(chat_sessions[chat_id], user_message)
@@ -114,5 +144,43 @@ def save_audio():
             'message': f'Failed to save audio: {str(e)}'
         }), 500
 
+@app.route('/rebuild_context', methods=['POST'])
+def rebuild_context():
+    """Rebuild the context for a chat session using history from the client."""
+    try:
+        chat_id = request.json.get('chat_id', 'default')
+        chat_history = request.json.get('chat_history', [])
+        
+        logger.info(f"Rebuilding context for chat_id: {chat_id}")
+        
+        # Create a new chat session if needed
+        if chat_id not in chat_sessions:
+            chat_sessions[chat_id] = start_chat_session()
+            
+        # If we have chat history from the client, replay it to rebuild context
+        if chat_history:
+            logger.info(f"Rebuilding context with {len(chat_history)} selected messages")
+            
+            # Process messages to rebuild context - we assume these are already optimized
+            for msg in chat_history:
+                try:
+                    # Silent message to rebuild context
+                    if msg.get('text'):
+                        chat_sessions[chat_id].send_message(msg.get('text'))
+                        logger.debug(f"Added context message: {msg.get('text')[:30]}...")
+                except Exception as e:
+                    logger.error(f"Error replaying message during context rebuild: {e}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Context rebuilt successfully'
+        })
+    except Exception as e:
+        logger.error(f"Error rebuilding context: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Failed to rebuild context'
+        }), 500
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)

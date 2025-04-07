@@ -1,0 +1,54 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+
+# IDE configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Application specific
+logs/
+*.log
+.env
+.env.local
+
+# Render specific
+.render/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Dependency management
+.uv/
+uv.lock
+
+# Python
+*.so
+.Python
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Application specific
+node_modules/ 

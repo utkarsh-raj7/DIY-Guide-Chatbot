@@ -1,127 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DIY Guide Chatbot</title>
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ url_for('static', filename='images/custom-logo.png') }}"
+    />
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="logo-container">
-                <div class="app-logo">
-                    <i class="fas fa-leaf"></i>
-                </div>
-                <h3 class="mb-2 app-title">DIY Guide</h3>
-                <p class="tagline">Your Creative Companion</p>
-                <button id="new-chat-btn" class="btn btn-primary mb-4">
-                    <i class="fas fa-plus me-2"></i>New Chat
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+          <div class="app-logo">
+            <img
+              src="{{ url_for('static', filename='images/custom-logo.png') }}"
+              alt="DIY Guide Logo"
+              class="logo-image"
+            />
+          </div>
+          <h3 class="mb-2 app-title">DIY Guide</h3>
+          <button id="new-chat-btn" class="btn btn-primary mb-4">
+            <i class="fas fa-plus me-2"></i>New Chat
+          </button>
+        </div>
+
+        <div class="history-container">
+          <h5 class="history-title">
+            <i class="fas fa-history me-2"></i>Chat History
+          </h5>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle w-100"
+              type="button"
+              id="historyDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Recent Chats
+            </button>
+            <ul
+              class="dropdown-menu w-100"
+              id="history-list"
+              aria-labelledby="historyDropdown"
+            >
+              <!-- History items will be added here via JavaScript -->
+            </ul>
+          </div>
+        </div>
+
+        <div class="about-section mt-auto">
+          <h5 class="about-title">
+            <i class="fas fa-info-circle me-2"></i>About Us
+          </h5>
+          <p>
+            We're
+            passionate about making DIY projects accessible to everyone!<br /><br/>
+            Created by our talented team: 
+            <br/>Shiwani (12319108)<br/>Utkarsh (12307839)</br>Nandani (12314288)<br/>
+            &copy; SUN AI Labs
+          </p>
+          <div class="summer-theme-info mt-3">
+            <span
+              class="badge rounded-pill bg-light text-dark mb-2 theme-badge"
+              data-message="Show me gardening ideas"
+              ><i class="fas fa-seedling me-1"></i> Gardening</span
+            >
+            <span
+              class="badge rounded-pill bg-light text-dark mb-2 theme-badge"
+              data-message="I need craft project ideas"
+              ><i class="fas fa-paint-brush me-1"></i> Crafts</span
+            >
+            <span
+              class="badge rounded-pill bg-light text-dark mb-2 theme-badge"
+              data-message="Help with DIY home projects"
+              ><i class="fas fa-hammer me-1"></i> DIY Projects</span
+            >
+          </div>
+        </div>
+
+        <button class="toggle-sidebar-btn" id="toggle-sidebar">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <button class="toggle-sidebar-return" id="toggle-sidebar-return">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="chat-container">
+          <!-- Mobile header with menu toggle -->
+          <div class="mobile-header d-md-none">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h4>
+              <img
+                src="{{ url_for('static', filename='images/custom-logo.png') }}"
+                alt="DIY Guide Logo"
+                class="mobile-logo-image"
+              />
+              DIY Guide
+            </h4>
+          </div>
+
+          <!-- Messages will be displayed here -->
+          <div id="messages-container" class="messages-container">
+            <div class="welcome-message">
+              <h2>
+                <img
+                  src="{{ url_for('static', filename='images/custom-logo.png') }}"
+                  alt="DIY Guide Logo"
+                  class="welcome-logo-image"
+                />
+                Welcome to DIY Guide!
+              </h2>
+              <p>
+                Ask me anything about DIY projects. I'm here to help with your
+                creative crafting, home improvement, and upcycling ideas!
+              </p>
+              <div class="suggestion-chips">
+                <button
+                  class="suggestion-chip"
+                  data-message="How do I start a herb garden?"
+                >
+                  <i class="fas fa-seedling me-1"></i> How do I start a herb
+                  garden?
                 </button>
+                <button
+                  class="suggestion-chip"
+                  data-message="Simple craft projects for kids"
+                >
+                  <i class="fas fa-child me-1"></i> Simple craft projects for
+                  kids
+                </button>
+                <button
+                  class="suggestion-chip"
+                  data-message="DIY party decorations"
+                >
+                  <i class="fas fa-birthday-cake me-1"></i> DIY party
+                  decorations
+                </button>
+                <button
+                  class="suggestion-chip"
+                  data-message="Sustainable upcycling projects"
+                >
+                  <i class="fas fa-recycle me-1"></i> Sustainable upcycling
+                  projects
+                </button>
+              </div>
             </div>
-            
-            <div class="history-container">
-                <h5 class="history-title"><i class="fas fa-history me-2"></i>Chat History</h5>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="historyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Recent Chats
-                    </button>
-                    <ul class="dropdown-menu w-100" id="history-list" aria-labelledby="historyDropdown">
-                        <!-- History items will be added here via JavaScript -->
-                    </ul>
-                </div>
+          </div>
+
+          <!-- Input Area -->
+          <div class="input-container">
+            <div class="audio-controls">
+              <!-- Voice menu and controls will be added here via JavaScript -->
+              <button
+                id="record-btn"
+                class="btn btn-circle"
+                title="Record audio message"
+              >
+                <i class="fas fa-microphone"></i>
+              </button>
+              <div id="recording-indicator" class="recording-indicator d-none">
+                <span class="recording-pulse"></span>
+                <span class="recording-text">Recording...</span>
+              </div>
+              <div id="audio-player" class="audio-player d-none">
+                <audio id="audio-element" controls></audio>
+                <button
+                  id="send-audio-btn"
+                  class="btn btn-sm btn-primary"
+                  title="Send audio"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+                <button
+                  id="cancel-audio-btn"
+                  class="btn btn-sm btn-danger"
+                  title="Cancel"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
             </div>
-            
-            <div class="about-section mt-auto">
-                <h5 class="about-title"><i class="fas fa-info-circle me-2"></i>About Us</h5>
-                <p>Your spring & summer DIY guide powered by advanced AI. Ask questions about home improvement, crafts, gardening, and outdoor projects!</p>
-                <div class="summer-theme-info mt-3">
-                    <span class="badge rounded-pill bg-light text-dark mb-2"><i class="fas fa-seedling me-1"></i> Gardening</span>
-                    <span class="badge rounded-pill bg-light text-dark mb-2"><i class="fas fa-paint-brush me-1"></i> Crafts</span>
-                    <span class="badge rounded-pill bg-light text-dark mb-2"><i class="fas fa-hammer me-1"></i> DIY Projects</span>
-                </div>
+
+            <div class="message-input-wrapper">
+              <textarea
+                id="message-input"
+                class="form-control"
+                placeholder="Type your DIY question here..."
+                rows="1"
+              ></textarea>
+              <button
+                id="send-btn"
+                class="btn btn-primary send-btn"
+                title="Send message"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
             </div>
-            
-            <button class="toggle-sidebar-btn" id="toggle-sidebar">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+          </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <button class="toggle-sidebar-return" id="toggle-sidebar-return">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="chat-container">
-                <!-- Mobile header with menu toggle -->
-                <div class="mobile-header d-md-none">
-                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h4><i class="fas fa-leaf me-2"></i>DIY Guide</h4>
-                </div>
-                
-                <!-- Messages will be displayed here -->
-                <div id="messages-container" class="messages-container">
-                    <div class="welcome-message">
-                        <h2><i class="fas fa-leaf me-2"></i>Welcome to the DIY Guide!</h2>
-                        <p>Ask me anything about DIY projects for spring and summer. I'm here to help with your creative gardening and home ideas!</p>
-                        <div class="suggestion-chips">
-                            <button class="suggestion-chip" data-message="How do I start a spring herb garden?">
-                                <i class="fas fa-seedling me-1"></i> How do I start a spring herb garden?
-                            </button>
-                            <button class="suggestion-chip" data-message="Simple garden crafts for kids">
-                                <i class="fas fa-child me-1"></i> Simple garden crafts for kids
-                            </button>
-                            <button class="suggestion-chip" data-message="DIY spring party decorations">
-                                <i class="fas fa-birthday-cake me-1"></i> DIY spring party decorations
-                            </button>
-                            <button class="suggestion-chip" data-message="Sustainable gardening projects">
-                                <i class="fas fa-recycle me-1"></i> Sustainable gardening projects
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Input Area -->
-                <div class="input-container">
-                    <div class="audio-controls">
-                        <!-- Voice menu and controls will be added here via JavaScript -->
-                        <button id="record-btn" class="btn btn-circle" title="Record audio message">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                        <div id="recording-indicator" class="recording-indicator d-none">
-                            <span class="recording-pulse"></span>
-                            <span class="recording-text">Recording...</span>
-                        </div>
-                        <div id="audio-player" class="audio-player d-none">
-                            <audio id="audio-element" controls></audio>
-                            <button id="send-audio-btn" class="btn btn-sm btn-primary" title="Send audio">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                            <button id="cancel-audio-btn" class="btn btn-sm btn-danger" title="Cancel">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="message-input-wrapper">
-                        <textarea id="message-input" class="form-control" placeholder="Type your DIY question here..." rows="1"></textarea>
-                        <button id="send-btn" class="btn btn-primary send-btn" title="Send message">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Bootstrap Bundle with Popper -->
@@ -132,5 +239,5 @@
     <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-</body>
+  </body>
 </html>

@@ -37,13 +37,31 @@ def format_results(results):
     
     formatted = []
     for i, result in enumerate(results, 1):
-        title = result.get('title', 'Untitled')
-        url = result.get('href', '#')
-        snippet = result.get('body', '')[:150] + '...' if result.get('body') else ''
-        
-        # Create a markdown link with title and short description
-        formatted.append(f"{i}. [{title}]({url})\n   {snippet}")
+        try:
+            title = result.get('title', 'Untitled')
+            url = result.get('href', '#')
+            snippet = result.get('body', '')[:150] + '...' if result.get('body') else ''
+            
+            # Clean the title and URL to avoid formatting issues
+            title = title.replace(")", "\\)").replace("(", "\\(")
+            
+            # Ensure URL is properly formatted for markdown
+            url = url.replace("(", "%28").replace(")", "%29").replace(" ", "%20")
+            
+            # Create a markdown link with title and short description
+            formatted_result = f"{i}. [{title}]({url})"
+            if snippet:
+                formatted_result += f"\n   {snippet}"
+            
+            formatted.append(formatted_result)
+        except Exception as e:
+            # Skip problematic results
+            print(f"Error formatting search result: {e}")
+            continue
     
+    if not formatted:
+        return "Error processing search results. Please try a different query."
+        
     return "\n\n".join(formatted)
 
 def extract_search_terms(text):
