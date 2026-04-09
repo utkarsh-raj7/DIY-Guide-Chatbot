@@ -274,7 +274,8 @@ def get_bot_response(chat_session, user_prompt):
             if search_results:
                 bot_text = f"{bot_text}\n{search_results}"
         
-        return markdown.markdown(bot_text)
+        html_result = markdown.markdown(bot_text)
+        return f'<div class="markdown-body">{html_result}</div>'
     
     except Exception as e:
         print(f"An error occurred while contacting the Gemini API: {e}")
