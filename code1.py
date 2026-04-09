@@ -149,11 +149,24 @@ Remember: Your primary goal is to help users successfully complete practical DIY
 
 # --- Chat Session Management ---
 
-def start_chat_session():
+def start_chat_session(history=None):
     """Starts a new chat session with system instruction for domain context."""
     client = _get_client()
+    
+    formatted_history = []
+    if history:
+        for msg in history:
+            text = msg.get('text', '')
+            sender = msg.get('sender', '')
+            if text and sender in ['user', 'bot']:
+                role = 'user' if sender == 'user' else 'model'
+                formatted_history.append(
+                    types.Content(role=role, parts=[types.Part.from_text(text=text)])
+                )
+                
     chat = client.chats.create(
         model=MODEL_NAME,
+        history=formatted_history if formatted_history else None,
         config=types.GenerateContentConfig(
             system_instruction=DOMAIN_CONTEXT
         )

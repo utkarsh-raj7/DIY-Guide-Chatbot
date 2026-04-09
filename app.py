@@ -71,23 +71,10 @@ def send_message():
             logger.info(f"Creating new chat session for existing chat_id: {chat_id}")
             
             # Create a new chat session
-            chat_sessions[chat_id] = start_chat_session()
+            chat_sessions[chat_id] = start_chat_session(history=chat_history)
             
-            # If we have chat history from the client, replay it to rebuild context
             if chat_history:
-                logger.info(f"Rebuilding context from {len(chat_history)} messages")
-                
-                # Process the history in pairs (user message followed by bot response)
-                for i in range(0, len(chat_history) - 1, 2):
-                    if i+1 < len(chat_history):
-                        user_msg = chat_history[i].get('text', '')
-                        # Only send the message to rebuild context, don't care about response
-                        if user_msg:
-                            try:
-                                # Silent message to rebuild context
-                                chat_sessions[chat_id].send_message(user_msg)
-                            except Exception as e:
-                                logger.error(f"Error replaying message during context rebuild: {e}")
+                logger.info(f"Rebuilding context from {len(chat_history)} messages natively")
         
         # Get the response from the model
         bot_response = get_bot_response(chat_sessions[chat_id], user_message)
@@ -153,23 +140,11 @@ def rebuild_context():
         
         logger.info(f"Rebuilding context for chat_id: {chat_id}")
         
-        # Create a new chat session if needed
+        # Create a new chat session with history if needed
         if chat_id not in chat_sessions:
-            chat_sessions[chat_id] = start_chat_session()
-            
-        # If we have chat history from the client, replay it to rebuild context
-        if chat_history:
-            logger.info(f"Rebuilding context with {len(chat_history)} selected messages")
-            
-            # Process messages to rebuild context - we assume these are already optimized
-            for msg in chat_history:
-                try:
-                    # Silent message to rebuild context
-                    if msg.get('text'):
-                        chat_sessions[chat_id].send_message(msg.get('text'))
-                        logger.debug(f"Added context message: {msg.get('text')[:30]}...")
-                except Exception as e:
-                    logger.error(f"Error replaying message during context rebuild: {e}")
+            chat_sessions[chat_id] = start_chat_session(history=chat_history)
+            if chat_history:
+                logger.info(f"Rebuilt context natively with {len(chat_history)} messages")
         
         return jsonify({
             'status': 'success',

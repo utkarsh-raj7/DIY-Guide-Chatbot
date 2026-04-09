@@ -1,4 +1,4 @@
-duckduckgo_search
+ddgs
 google-genai
 Flask==3.1.0
 Markdown==3.7
