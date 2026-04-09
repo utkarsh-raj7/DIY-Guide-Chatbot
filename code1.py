@@ -28,7 +28,7 @@ def _get_client():
         _configured_api_key = api_key
     return _client
 
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-3-flash-preview"
 
 # --- Domain Definition ---
 DOMAIN_CONTEXT = """You are DIY Guide, a specialized assistant focused exclusively on do-it-yourself projects and creative activities.
@@ -265,4 +265,4 @@ def get_bot_response(chat_session, user_prompt):
     
     except Exception as e:
         print(f"An error occurred while contacting the Gemini API: {e}")
-        return "Sorry, I encountered an error. Please try again."
+        return f"Sorry, I encountered an error: {e}"
