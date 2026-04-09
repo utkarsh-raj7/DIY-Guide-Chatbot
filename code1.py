@@ -10,14 +10,26 @@ from websearch import search_web, format_results
 # Load environment variables (optional, recommended for API key)
 # Create a .env file in the same directory with: GOOGLE_API_KEY=YOUR_API_KEY
 load_dotenv() 
-API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not API_KEY:
-    print("Error: GOOGLE_API_KEY not found.")
-    print("Please set the GOOGLE_API_KEY environment variable or place it in a .env file.")
-    exit() # Exit if the API key is not configured
+# --- Lazy API Key / Model Management ---
+_configured_api_key = None
+_model = None
 
-genai.configure(api_key=API_KEY)
+def _get_model():
+    """Lazily configure the API and return the model, always using the current env var."""
+    global _configured_api_key, _model
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "GEMINI_API_KEY not found. "
+            "Please set the GEMINI_API_KEY environment variable or place it in a .env file."
+        )
+    # Reconfigure if the key changed (e.g. after updating the env var on Render)
+    if api_key != _configured_api_key:
+        genai.configure(api_key=api_key)
+        _configured_api_key = api_key
+        _model = genai.GenerativeModel('gemini-1.5-flash')
+    return _model
 
 # --- Domain Definition (Crucial!) ---
 # CHANGE THIS to your chosen specific domain
@@ -138,10 +150,8 @@ Remember: Your primary goal is to help users successfully complete practical DIY
 """
 
 # --- Model Setup ---
-# Choose the appropriate Gemini model
-# For text-based chat, 'gemini-1.5-flash' or 'gemini-pro' are good choices.
-# 'gemini-1.5-flash' is often faster and cheaper.
-model = genai.GenerativeModel('gemini-1.5-flash')
+# The model is now lazily initialized via _get_model() above.
+# This ensures the API key is always current.
 
 # --- Conversation Memory ---
 # Simple list to store conversation history
@@ -151,6 +161,7 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 def start_chat_session():
     """Starts a new chat session with the initial domain context."""
+    model = _get_model()
     # The history starts with the system instruction defining the bot's role
     initial_history = [
         {'role': 'user', 'parts': ["Understood. I will act as a DIY project guide."]}, # Priming the model slightly
