@@ -6,7 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "duckduckgo-search>=2025.4.4",
     "flask>=3.1.0",
-    "google-generativeai>=0.8.4",
+    "google-genai",
     "gtts>=2.5.4",
     "gunicorn>=23.0.0",
     "markdown>=3.7",

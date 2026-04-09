@@ -1,38 +1,36 @@
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
-from dotenv import load_dotenv # Optional: for loading API key from .env file
+from dotenv import load_dotenv
 import markdown
 import re
 from websearch import search_web, format_results
 
 
 # --- Configuration ---
-# Load environment variables (optional, recommended for API key)
-# Create a .env file in the same directory with: GOOGLE_API_KEY=YOUR_API_KEY
 load_dotenv() 
 
-# --- Lazy API Key / Model Management ---
+# --- Lazy Client Management ---
 _configured_api_key = None
-_model = None
+_client = None
 
-def _get_model():
-    """Lazily configure the API and return the model, always using the current env var."""
-    global _configured_api_key, _model
+def _get_client():
+    """Lazily create/reconfigure the genai Client using the current env var."""
+    global _configured_api_key, _client
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError(
             "GEMINI_API_KEY not found. "
             "Please set the GEMINI_API_KEY environment variable or place it in a .env file."
         )
-    # Reconfigure if the key changed (e.g. after updating the env var on Render)
     if api_key != _configured_api_key:
-        genai.configure(api_key=api_key)
+        _client = genai.Client(api_key=api_key)
         _configured_api_key = api_key
-        _model = genai.GenerativeModel('gemini-2.0-flash')
-    return _model
+    return _client
 
-# --- Domain Definition (Crucial!) ---
-# CHANGE THIS to your chosen specific domain
+MODEL_NAME = "gemini-2.0-flash"
+
+# --- Domain Definition ---
 DOMAIN_CONTEXT = """You are DIY Guide, a specialized assistant focused exclusively on do-it-yourself projects and creative activities.
 
 Provide practical, step-by-step instructions for DIY projects with these characteristics:
@@ -149,26 +147,17 @@ If asked about non-DIY topics (health, finance, legal, etc.), politely decline a
 Remember: Your primary goal is to help users successfully complete practical DIY projects through clear guidance, using web search only when visual references would truly enhance understanding.
 """
 
-# --- Model Setup ---
-# The model is now lazily initialized via _get_model() above.
-# This ensures the API key is always current.
-
-# --- Conversation Memory ---
-# Simple list to store conversation history
-# Each item could be a dictionary: {'role': 'user'/'model', 'parts': [text]}
-# Or manage history directly within the chat session object
-# For simplicity here, we'll use the chat session feature which handles history
+# --- Chat Session Management ---
 
 def start_chat_session():
-    """Starts a new chat session with the initial domain context."""
-    model = _get_model()
-    # The history starts with the system instruction defining the bot's role
-    initial_history = [
-        {'role': 'user', 'parts': ["Understood. I will act as a DIY project guide."]}, # Priming the model slightly
-        {'role': 'model', 'parts': [DOMAIN_CONTEXT]} 
-    ]
-    # Start a chat session which maintains history automatically
-    chat = model.start_chat(history=initial_history) 
+    """Starts a new chat session with system instruction for domain context."""
+    client = _get_client()
+    chat = client.chats.create(
+        model=MODEL_NAME,
+        config=types.GenerateContentConfig(
+            system_instruction=DOMAIN_CONTEXT
+        )
+    )
     return chat
 
 def extract_search_query(text):
@@ -177,9 +166,7 @@ def extract_search_query(text):
     match = re.search(search_pattern, text)
     if match:
         query = match.group(1).strip()
-        # Remove any special characters that might cause issues
         query = re.sub(r'[^\w\s\-\.]', ' ', query)
-        # Limit query length to prevent issues
         query = query[:100] if len(query) > 100 else query
         return query
     return None
@@ -193,7 +180,6 @@ def get_web_search_results(query):
         results = search_web(query)
         if results:
             formatted = format_results(results)
-            # Changed the formatting to be clearer and avoid truncation issues
             return f"\n\n### Related DIY Project Resources\n{formatted}"
         return ""
     except Exception as e:
@@ -206,15 +192,11 @@ def get_bot_response(chat_session, user_prompt):
     and returns the bot's response with optional web search results.
     """
     try:
-        # Check if user is specifically asking for links or resources
         is_asking_for_links = any(term in user_prompt.lower() for term in ["link", "resource", "website", "url"])
         
-        # Send the message - the chat session automatically includes history
         response = chat_session.send_message(user_prompt)
-        # Extract the text response
         bot_text = response.text
         
-        # Extract search query if present
         search_query = extract_search_query(bot_text)
         
         # Post-process response to fix "I cannot provide links" statements
@@ -227,71 +209,55 @@ def get_bot_response(chat_session, user_prompt):
         
         contains_refusal = any(re.search(pattern, bot_text, re.IGNORECASE) for pattern in link_refusal_patterns)
         
-        # If the response contains a link refusal statement AND we need to provide resources
         if contains_refusal and is_asking_for_links:
-            # Get context from recent conversation if available
             try:
-                # Extract the topic from current response or recent history
                 topic_match = re.search(r"(birthday hat|DIY project|craft project|woodworking|garden|home improvement|upcycling|craft)", bot_text, re.IGNORECASE)
                 if topic_match:
                     topic = topic_match.group(1)
-                    
-                    # Remove the "I cannot provide links" statement
                     for pattern in link_refusal_patterns:
                         bot_text = re.sub(pattern + r"[^.]*\.", "", bot_text, flags=re.IGNORECASE)
-                    
-                    # Add a better response with search terms
                     search_terms = f"DIY {topic} tutorial step by step"
                     if not search_query:
                         search_query = search_terms
                         bot_text += f"\n\nHere are search terms that will help you find visual guides: SEARCH_QUERY: {search_query}"
             except Exception as e:
                 print(f"Error fixing link refusal: {e}")
-                # If we can't extract a topic but need links, provide a generic search query
                 if not search_query:
                     search_query = "DIY birthday hat tutorial"
                     bot_text += f"\n\nHere are some search terms you might find helpful: SEARCH_QUERY: {search_query}"
         
-        # If user is asking for links but no search query was generated, extract a search query from conversation
         if is_asking_for_links and not search_query:
-            # Try to extract relevant DIY topic from recent conversation
             try:
-                # Get recent messages, but handle potential format differences in chat_session.history
+                # Try to extract context from chat history
                 prev_messages = []
-                for msg in chat_session.history[-6:]:
-                    if isinstance(msg, dict) and msg.get('role') == 'user' and 'parts' in msg:
-                        if isinstance(msg['parts'], list) and len(msg['parts']) > 0:
-                            if isinstance(msg['parts'][0], str):
-                                prev_messages.append(msg['parts'][0])
-                            elif isinstance(msg['parts'][0], dict) and 'text' in msg['parts'][0]:
-                                prev_messages.append(msg['parts'][0]['text'])
+                history = getattr(chat_session, '_curated_history', []) or getattr(chat_session, 'history', [])
+                for msg in history[-6:]:
+                    role = getattr(msg, 'role', None)
+                    if role == 'user':
+                        parts = getattr(msg, 'parts', [])
+                        for part in parts:
+                            text = getattr(part, 'text', None)
+                            if text:
+                                prev_messages.append(text)
                 
                 prev_text = " ".join(prev_messages)
                 
-                # Look for DIY topics
                 diy_terms = ["make", "create", "build", "craft", "project", "tutorial"]
                 for term in diy_terms:
                     if term in prev_text.lower():
-                        # Create a search query based on the conversation context
                         words = prev_text.split()
                         search_query = f"{term} {' '.join(words[-3:])} tutorial"
                         break
                 
-                # Fallback if no specific term found
                 if not search_query:
                     search_query = "DIY project tutorial"
             except Exception as e:
                 print(f"Error extracting search query from history: {e}")
                 search_query = "DIY tutorial"
         
-        # Clean up the bot response by removing the search query directive
         if search_query:
             bot_text = re.sub(r"SEARCH_QUERY:\s*.+?(?:$|\n)", "", bot_text).strip()
-            
-            # Get web search results
             search_results = get_web_search_results(search_query)
-            
-            # Append search results to response
             if search_results:
                 bot_text = f"{bot_text}\n{search_results}"
         
@@ -299,6 +265,4 @@ def get_bot_response(chat_session, user_prompt):
     
     except Exception as e:
         print(f"An error occurred while contacting the Gemini API: {e}")
-        # You might want more sophisticated error handling here
         return "Sorry, I encountered an error. Please try again."
-
