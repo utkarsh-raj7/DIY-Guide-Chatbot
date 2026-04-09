@@ -28,7 +28,7 @@ def _get_model():
     if api_key != _configured_api_key:
         genai.configure(api_key=api_key)
         _configured_api_key = api_key
-        _model = genai.GenerativeModel('gemini-1.5-flash')
+        _model = genai.GenerativeModel('gemini-2.0-flash')
     return _model
 
 # --- Domain Definition (Crucial!) ---
